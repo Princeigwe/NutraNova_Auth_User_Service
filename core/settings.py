@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['nutra-nova-auth-user-service.vercel.app']
+ALLOWED_HOSTS = ['nutra-nova-auth-user-service.vercel.app', 'nutra-nova-auth-user-service-kh5a6z9cm-pf708495-gmailcom.vercel.app']
 
 
 # Application definition
