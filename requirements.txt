@@ -20,7 +20,6 @@ cement==2.8.2
 certifi==2020.6.20
 chardet==4.0.0
 chevron==0.14.0
-chrome-gnome-shell==0.0.0
 click==8.0.3
 colorama==0.4.3
 command-not-found==0.3
