@@ -18,6 +18,9 @@ jobs:
     executor: python/default
     steps:
       - checkout
+      - python/install-packages:
+          pkg-manager: pip
+          args: django-pytest
       - run:
           name: Test API
           command: |
