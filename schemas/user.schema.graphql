@@ -1,0 +1,35 @@
+type User{
+  first_name: String!
+  last_name: String!
+  email: String!
+  username: String!
+  password: String!
+}
+
+input CreateUserInput{
+  first_name: String!
+  last_name: String!
+  email: String! 
+  username: String!
+  password: String!
+}
+
+type UserResponse{
+  message: String
+  error: String
+  user: User
+}
+
+type UsersResponse{
+  message: String
+  users: [User]!
+}
+
+type Query{
+  users: UsersResponse
+  user: UserResponse
+}
+
+type Mutation{
+  createUser(input: CreateUserInput): UserResponse!
+}

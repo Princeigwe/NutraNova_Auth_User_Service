@@ -25,3 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('graphql/', GraphQLView.as_view(schema=schema), name='graphql'),
 ]
+
+
+admin.site.site_header = "NutraNove User Admin"
