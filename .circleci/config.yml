@@ -27,6 +27,9 @@ jobs:
           command: |
             sudo npm install --global vercel
       - run:
+          name: Login
+          command: vercel login pf708495@gmail.com
+      - run:
           name: Pull
           command: vercel pull
       - run:
