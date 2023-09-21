@@ -1,0 +1,50 @@
+version: 2.1
+orbs:
+  node: circleci/node@5.1.0
+  python: circleci/python@2.1.1
+
+jobs:
+
+  install-python-dependencies:
+    executor: python/default
+    steps:
+      - checkout
+      - python/install-packages:
+          pip-dependency-file: requirements.txt
+          pkg-manager: pip
+  
+  test-application:
+    executor: python/default
+    steps:
+      - checkout
+      - run:
+          name: Test API
+          command: |
+            python3 -m pytest
+  
+  deploy-with-vercel-cli:
+    executor: node/default
+    steps:
+      - checkout
+      - run:
+          name: Install Vercel CLI
+          command: |
+            npm install --global vercel
+      - run: 
+          name: Deploy
+          command: |
+            vercel --token $VERCEL_ACCESS_TOKEN
+
+
+
+workflows:
+  build-and-deploy:
+    jobs:
+      - install-python-dependencies
+      - test-application:
+          requires:
+            - install-python-dependencies
+      - deploy-with-vercel-cli:
+          context: NutraNova
+          requires:
+            - test-application
