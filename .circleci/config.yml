@@ -18,30 +18,18 @@ jobs:
       #     command: |
       #       python3 -m pytest
   
-  # test-application:
-  #   executor: python/default
-  #   steps:
-  #     - checkout
-  #     - python/install-packages:
-  #         pkg-manager: pip
-  #         args: django-pytest
-  #     - run:
-  #         name: Test API
-  #         command: |
-  #           python3 -m pytest
-  
-  # deploy-with-vercel-cli:
-  #   executor: node/default
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Install Vercel CLI
-  #         command: |
-  #           npm install --global vercel
-  #     - run: 
-  #         name: Deploy
-  #         command: |
-  #           vercel --token $VERCEL_ACCESS_TOKEN
+  deploy-with-vercel-cli:
+    executor: node/default
+    steps:
+      - checkout
+      - run:
+          name: Install Vercel CLI
+          command: |
+            npm install --global vercel
+      - run: 
+          name: Deploy
+          command: |
+            vercel --token $VERCEL_ACCESS_TOKEN
 
 
 
@@ -49,7 +37,7 @@ workflows:
   build-and-deploy:
     jobs:
       - install-python-dependencies-and-test-application
-      # - deploy-with-vercel-cli:
-      #     context: NutraNova
-      #     requires:
-      #       - test-application
+      - deploy-with-vercel-cli:
+          context: NutraNova
+          requires:
+            - install-python-dependencies-and-test-application
