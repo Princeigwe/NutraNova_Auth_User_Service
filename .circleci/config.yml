@@ -34,7 +34,7 @@ jobs:
           command: vercel pull
       - run:
           name: Build
-          command: vercel build
+          command: vercel build --yes
       - run: 
           name: Deploy
           command: |
