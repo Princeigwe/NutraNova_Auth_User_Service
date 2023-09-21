@@ -33,6 +33,9 @@ jobs:
       #     name: Pull
       #     command: vercel pull
       - run:
+          name: Link Project
+          command: vercel
+      - run:
           name: Build
           command: vercel build --yes
       - run: 
