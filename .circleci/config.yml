@@ -26,10 +26,17 @@ jobs:
           name: Install Vercel CLI
           command: |
             sudo npm install --global vercel
+      - run:
+          name: Build
+          command: vercel build
       - run: 
           name: Deploy
           command: |
-            vercel --token $VERCEL_ACCESS_TOKEN
+            vercel deploy --prebuilt --token $VERCEL_ACCESS_TOKEN
+      # - run: 
+      #     name: Deploy
+      #     command: |
+      #       vercel --token $VERCEL_ACCESS_TOKEN
 
 
 
