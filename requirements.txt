@@ -1,5 +1,4 @@
 anyio==4.0.0
-apturl==0.5.2
 ariadne==0.20.1
 ariadne-django==0.3.0
 arrow==1.2.3
