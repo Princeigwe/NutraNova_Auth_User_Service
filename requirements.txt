@@ -5,12 +5,8 @@ arrow==1.2.3
 asgiref==3.7.2
 aws-lambda-builders==1.19.0
 aws-sam-translator==1.52.0
-# awscli
-# awsebcli==3.20.3
 binaryornot==0.4.4
 blessed==1.19.1
-# boto3==1.24.89
-# botocore
 cement==2.8.2
 chevron==0.14.0
 colorama==0.4.3
@@ -18,6 +14,7 @@ cookiecutter==2.1.1
 dateparser==1.1.1
 Django==4.2.5
 django-cockroachdb==4.2
+django-pytest==0.2.0
 docker==4.2.2
 docker-compose==1.25.5
 docutils==0.16
