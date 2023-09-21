@@ -1,5 +1,4 @@
-from ariadne import QueryType, make_executable_schema, load_schema_from_path
-import schemas
+from ariadne import QueryType, make_executable_schema, load_schema_from_path, MutationType
 from users import resolvers
 
 
@@ -9,4 +8,7 @@ query = QueryType()
 query.set_field("users", resolvers.resolve_users)
 
 
-schema = make_executable_schema(type_defs, query)
+mutation = MutationType()
+mutation.set_field('createUser', resolvers.resolve_createUser)
+
+schema = make_executable_schema(type_defs, query, mutation)
