@@ -1,5 +1,4 @@
 from ariadne import QueryType, make_executable_schema, load_schema_from_path, MutationType
-import schemas
 from users import resolvers
 
 
