@@ -21,7 +21,7 @@ jobs:
   deploy-with-vercel-cli:
     executor: node/default
     steps:
-      - checkout
+      - checkout: .
       - run:
           name: Install Vercel CLI
           command: |
