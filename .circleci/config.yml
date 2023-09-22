@@ -32,9 +32,9 @@ jobs:
       # - run:
       #     name: Pull
       #     command: vercel pull
-      # - run:
-      #     name: Link Project
-      #     command: vercel
+      - run:
+          name: Link Project
+          command: vercel --link --token $VERCEL_ACCESS_TOKEN
       - run:
           name: Build
           command: vercel build --yes
