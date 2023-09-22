@@ -26,15 +26,15 @@ jobs:
           name: Install Vercel CLI
           command: |
             sudo npm install --global vercel
-      - run:
-          name: Login
-          command: vercel login pf708495@gmail.com
+      # - run:
+      #     name: Login
+      #     command: vercel login pf708495@gmail.com
       # - run:
       #     name: Pull
       #     command: vercel pull
-      - run:
-          name: Link Project
-          command: vercel
+      # - run:
+      #     name: Link Project
+      #     command: vercel
       - run:
           name: Build
           command: vercel build --yes
