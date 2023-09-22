@@ -37,7 +37,7 @@ jobs:
           command: vercel link --yes --token $VERCEL_ACCESS_TOKEN
       - run:
           name: Build
-          command: vercel build --yes
+          command: vercel build --yes --token $VERCEL_ACCESS_TOKEN
       - run: 
           name: Deploy
           command: |
