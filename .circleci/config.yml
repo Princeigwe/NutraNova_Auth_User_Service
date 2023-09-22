@@ -7,6 +7,9 @@ jobs:
 
   install-python-dependencies-and-test-application:
     executor: python/default
+    environment:
+      VERCEL_ORG_ID: $VERCEL_ORG_ID
+      VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
     steps:
       - checkout
       - python/install-packages:
@@ -34,10 +37,10 @@ jobs:
       #     command: vercel pull
       - run:
           name: Link Project
-          command: vercel link --yes --token $VERCEL_ACCESS_TOKEN
+          command: vercel link --token $VERCEL_ACCESS_TOKEN
       - run:
           name: Build
-          command: vercel build --yes --token $VERCEL_ACCESS_TOKEN
+          command: vercel build --token $VERCEL_ACCESS_TOKEN
       - run: 
           name: Deploy
           command: |
