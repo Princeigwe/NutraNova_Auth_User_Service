@@ -33,11 +33,11 @@ jobs:
       #     name: Login
       #     command: vercel login pf708495@gmail.com
       # - run:
-      #     name: Pull
-      #     command: vercel pull
-      - run:
-          name: Link Project
-          command: vercel link --token $VERCEL_ACCESS_TOKEN
+          name: Pull
+          command: vercel pull --environment=preview --token $VERCEL_ACCESS_TOKEN
+      # - run:
+      #     name: Link Project
+      #     command: vercel link --token $VERCEL_ACCESS_TOKEN
       - run:
           name: Build
           command: vercel build --token $VERCEL_ACCESS_TOKEN
