@@ -15,7 +15,7 @@ jobs:
       - python/install-packages:
           pip-dependency-file: requirements.txt
           pkg-manager: pip
-          args: django-pytest  werkzeug==1.0.1
+          args: django-pytest
       # - run:
       #     name: Test API
       #     command: |
@@ -38,17 +38,17 @@ jobs:
       # - run:
       #     name: Link Project
       #     command: vercel link --token $VERCEL_ACCESS_TOKEN
-      - run:
-          name: Build
-          command: vercel build --token $VERCEL_ACCESS_TOKEN
-      - run: 
-          name: Deploy
-          command: |
-            vercel deploy --prebuilt --token $VERCEL_ACCESS_TOKEN
+      # - run:
+      #     name: Build
+      #     command: vercel build --token $VERCEL_ACCESS_TOKEN
       # - run: 
       #     name: Deploy
       #     command: |
-      #       vercel --token $VERCEL_ACCESS_TOKEN
+      #       vercel deploy --prebuilt --token $VERCEL_ACCESS_TOKEN
+      - run: 
+          name: Deploy
+          command: |
+            vercel --token $VERCEL_ACCESS_TOKEN
 
 
 
