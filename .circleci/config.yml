@@ -32,7 +32,7 @@ jobs:
       # - run:
       #     name: Login
       #     command: vercel login pf708495@gmail.com
-      # - run:
+      - run:
           name: Pull
           command: vercel pull --environment=preview --token $VERCEL_ACCESS_TOKEN
       # - run:
