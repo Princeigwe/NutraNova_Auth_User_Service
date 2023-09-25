@@ -4,47 +4,88 @@ orbs:
   python: circleci/python@2.1.1
 
 jobs:
+  
 
-  install-python-dependencies:
+  install-python-dependencies-and-test-application:
     executor: python/default
+    environment:
+      VERCEL_ORG_ID: $VERCEL_ORG_ID
+      VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
+      APOLLO_KEY: $APOLLO_KEY
     steps:
       - checkout
       - python/install-packages:
           pip-dependency-file: requirements.txt
           pkg-manager: pip
+          args: django-pytest
+      # - run:
+      #     name: Test API
+      #     command: |
+      #       python3 -m pytest
   
-  test-application:
-    executor: python/default
+  deploy-with-vercel-cli:
+    executor: node/default
     steps:
       - checkout
       - run:
-          name: Test API
+          name: Install Vercel CLI
           command: |
-            python3 -m pytest
+            sudo npm install --global vercel
+      # - run:
+      #     name: Login
+      #     command: vercel login pf708495@gmail.com
+      - run:
+          name: Pull
+          command: vercel pull --environment=preview --token $VERCEL_ACCESS_TOKEN
+      # - run:
+      #     name: Link Project
+      #     command: vercel link --token $VERCEL_ACCESS_TOKEN
+      # - run:
+      #     name: Build
+      #     command: vercel build --token $VERCEL_ACCESS_TOKEN
+      # - run: 
+      #     name: Deploy
+      #     command: |
+      #       vercel deploy --prebuilt --token $VERCEL_ACCESS_TOKEN
+      - run: 
+          name: Deploy
+          command: |
+            vercel --token $VERCEL_ACCESS_TOKEN
   
-  # deploy-with-vercel-cli:
-  #   executor: node/default
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Install Vercel CLI
-  #         command: |
-  #           npm install --global vercel
-  #     - run: 
-  #         name: Deploy
-  #         command: |
-  #           vercel --token $VERCEL_ACCESS_TOKEN
 
-
+  update-subgraph-schema:
+    executor: node/default
+    steps:
+      - run:
+          name: Install Rover
+          command: |
+            curl -sSL https://rover.apollo.dev/nix/latest | sh
+            echo 'export PATH=$HOME/.rover/bin:$PATH' >> $BASH_ENV  
+      - checkout
+      - run:
+          name: Connect CLI to GraphOS Studio
+          command: rover config auth
+      - when:
+          condition:
+            equal: [ staging, << pipeline.git.branch >> ]
+          steps:
+            - run:
+                name: Schema Check
+                command: rover subgraph check nutranova-super-graph@staging \
+                          --schema ./schemas/user.schema.graphql \
+                          --name nutra-nova-auth-user-service
+            - run:
+                name: Publish Schema
+                command: rover subgraph publish nutranova-super-graph@staging \
+                          --schema ./schemas/user.schema.graphql \
+                          --name nutra-nova-auth-user-service \
+                          --routing-url https://nutra-nova-auth-user-service.vercel.app/graphql/
 
 workflows:
   build-and-deploy:
     jobs:
-      - install-python-dependencies
-      - test-application:
+      - install-python-dependencies-and-test-application
+      - deploy-with-vercel-cli:
+          context: NutraNova
           requires:
-            - install-python-dependencies
-      # - deploy-with-vercel-cli:
-      #     context: NutraNova
-      #     requires:
-      #       - test-application
+            - install-python-dependencies-and-test-application
