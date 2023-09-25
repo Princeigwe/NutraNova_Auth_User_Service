@@ -89,3 +89,7 @@ workflows:
           context: NutraNova
           requires:
             - install-python-dependencies-and-test-application
+      - update-subgraph-schema:
+          context: NutraNova
+          requires:
+            - deploy-with-vercel-cli
