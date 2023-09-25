@@ -62,9 +62,9 @@ jobs:
             curl -sSL https://rover.apollo.dev/nix/latest | sh
             echo 'export PATH=$HOME/.rover/bin:$PATH' >> $BASH_ENV  
       - checkout
-      - run:
-          name: Connect CLI to GraphOS Studio
-          command: rover config auth
+      # - run:
+      #     name: Connect CLI to GraphOS Studio
+      #     command: rover config auth
       - when:
           condition:
             equal: [ staging, << pipeline.git.branch >> ]
