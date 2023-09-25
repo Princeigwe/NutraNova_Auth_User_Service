@@ -65,6 +65,9 @@ jobs:
       # - run:
       #     name: Connect CLI to GraphOS Studio
       #     command: rover config auth
+      - run: 
+          name: Rover Help
+          command: rover --help
       - when:
           condition:
             equal: [ staging, << pipeline.git.branch >> ]
@@ -75,7 +78,7 @@ jobs:
                           --schema ./schemas/user.schema.graphql \
                           --name nutra-nova-auth-user-service \
                           --log debug
-
+              
             - run:
                 name: Publish Schema
                 command: rover subgraph publish nutranova-super-graph@staging \
