@@ -4,12 +4,14 @@ orbs:
   python: circleci/python@2.1.1
 
 jobs:
+  
 
   install-python-dependencies-and-test-application:
     executor: python/default
     environment:
       VERCEL_ORG_ID: $VERCEL_ORG_ID
       VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
+      APOLLO_KEY: $APOLLO_KEY
     steps:
       - checkout
       - python/install-packages:
@@ -49,8 +51,35 @@ jobs:
           name: Deploy
           command: |
             vercel --token $VERCEL_ACCESS_TOKEN
+  
 
-
+  update-subgraph-schema:
+    executor: node/default
+    steps:
+      - run:
+          name: Install Rover
+          command: |
+            curl -sSL https://rover.apollo.dev/nix/latest | sh
+            echo 'export PATH=$HOME/.rover/bin:$PATH' >> $BASH_ENV  
+      - checkout
+      - run:
+          name: Connect CLI to GraphOS Studio
+          command: rover config auth
+      - when:
+          condition:
+            equal: [ staging, << pipeline.git.branch >> ]
+          steps:
+            - run:
+                name: Schema Check
+                command: rover subgraph check nutranova-super-graph@staging \
+                          --schema ./schemas/user.schema.graphql \
+                          --name nutra-nova-auth-user-service
+            - run:
+                name: Publish Schema
+                command: rover subgraph publish nutranova-super-graph@staging \
+                          --schema ./schemas/user.schema.graphql \
+                          --name nutra-nova-auth-user-service \
+                          --routing-url https://nutra-nova-auth-user-service.vercel.app/graphql/
 
 workflows:
   build-and-deploy:
