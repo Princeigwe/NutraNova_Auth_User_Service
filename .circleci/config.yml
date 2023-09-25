@@ -67,7 +67,7 @@ jobs:
       #     command: rover config auth
       - run: 
           name: Rover Help
-          command: rover --help
+          command: rover subgraph --help
       - when:
           condition:
             equal: [ staging, << pipeline.git.branch >> ]
