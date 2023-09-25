@@ -71,7 +71,7 @@ jobs:
           steps:
             - run:
                 name: Schema Check
-                command: rover subgraph check nutranova-super-graph@staging \
+                command: rover graph check nutranova-super-graph@staging \
                           --schema ./schemas/user.schema.graphql \
                           --name nutra-nova-auth-user-service
             - run:
