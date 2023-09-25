@@ -74,7 +74,7 @@ jobs:
           steps:
             - run:
                 name: Schema Check
-                command: rover graph check nutranova-super-graph@staging -s ./schemas/user.schema.graphql -- -n nutra-nova-auth-user-service --log debug
+                command: rover graph check nutranova-super-graph@staging -s ./schemas/user.schema.graphql --log debug
               
             - run:
                 name: Publish Schema
