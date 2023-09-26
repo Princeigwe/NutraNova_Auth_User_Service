@@ -73,21 +73,16 @@ jobs:
             equal: [ staging, << pipeline.git.branch >> ]
           steps:
             - run:
-                name: Create SuperGraph Variant
+                name: Create SuperGraph Variant(Create Once with Rover CLI)
                 command: rover subgraph publish nutranova-super-graph@staging -s ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutra-nova-auth-user-service.vercel.app/graphql/  --log debug
             - run:
                 name: Schema Check
-                # command: rover graph check nutranova-super-graph@staging -s ./schemas/user.schema.graphql --log debug
-                command: rover subgraph publish nutranova-super-graph@staging -s ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutra-nova-auth-user-service.vercel.app/graphql/  --log debug
+                command: rover graph check nutranova-super-graph@staging -s ./schemas/user.schema.graphql --log debug
 
               
             - run:
                 name: Publish Schema
-                command: rover subgraph publish nutranova-super-graph@staging \
-                          --schema ./schemas/user.schema.graphql \
-                          --name nutra-nova-auth-user-service \
-                          --routing-url https://nutra-nova-auth-user-service.vercel.app/graphql/ \
-                          --log debug
+                command: rover subgraph publish nutranova-super-graph@staging --schema ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutra-nova-auth-user-service.vercel.app/graphql/ --log debug
 
 
 workflows:
