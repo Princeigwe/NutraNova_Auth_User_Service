@@ -8,6 +8,7 @@ auth0_domain = os.environ.get("AUTH0_DOMAIN")
 client_id = os.environ.get('AUTH0_CLIENT_ID')
 client_application_domain = os.environ.get('CLIENT_APPLICATION_DOMAIN')
 
+
 def oidc_authenticate(request):
   auth0_authorize_url = f'https://{auth0_domain}/authorize'
   redirect_uri = f"http://{client_application_domain}/oidc/callback/"
@@ -20,6 +21,7 @@ def oidc_authenticate(request):
   }
 
   return redirect( f"{auth0_authorize_url}?{'&'.join([f'{key}={value}' for key, value in params.items()])}" )
+
 
 def oidc_callback(request):
   authorization_code = request.GET.get("code")
