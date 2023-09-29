@@ -16,7 +16,7 @@ def oidc_authenticate(request):
       "response_type": "code",
       "client_id": client_id,
       "redirect_uri": redirect_uri,
-      "scope": "openid profile",
+      "scope": "openid profile email",
   }
 
   return redirect( f"{auth0_authorize_url}?{'&'.join([f'{key}={value}' for key, value in params.items()])}" )
