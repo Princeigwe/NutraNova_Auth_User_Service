@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     # local apps
     'users.apps.UsersConfig',
+    'oidc.apps.OidcConfig',
 
 
     # 3rd party apps
