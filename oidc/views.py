@@ -10,8 +10,7 @@ client_application_domain = os.environ.get('CLIENT_APPLICATION_DOMAIN')
 
 def oidc_authenticate(request):
     auth0_authorize_url = f'https://{auth0_domain}/authorize'
-    client_application_domain = os.environ.get('CLIENT_APPLICATION_DOMAIN')
-    redirect_uri = "http://127.0.0.1:8000/oidc/callback/"
+    redirect_uri = f"http://{client_application_domain}/oidc/callback/"
 
     params = {
         "response_type": "code",
@@ -20,13 +19,11 @@ def oidc_authenticate(request):
         "scope": "openid profile",
     }
 
-    # response = requests.get(url=auth0_authorize_url, params=params)
     return redirect( f"{auth0_authorize_url}?{'&'.join([f'{key}={value}' for key, value in params.items()])}" )
 
 def oidc_callback(request):
     authorization_code = request.GET.get("code")
-    client_application_domain = os.environ.get('CLIENT_APPLICATION_DOMAIN')
-    redirect_uri = "http://127.0.0.1:8000/oidc/callback/"
+    redirect_uri = f"http://{client_application_domain}/oidc/callback/"
 
     # exchanging code for token
     token_url = f'https://{auth0_domain}/oauth/token'
@@ -38,8 +35,7 @@ def oidc_callback(request):
         "redirect_uri": redirect_uri
     }
 
-    # response = requests.post(url=token_url, data=data)
-    # response = response.json()
+
     token_response = requests.post(token_url, data=token_data)
     token_response_data = token_response.json()
     print(token_response_data)
