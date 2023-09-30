@@ -91,13 +91,22 @@ DATABASES = {
     # }
 
     # connecting to remote cockroachDB database
+    # 'default': {
+    #     'ENGINE': 'django_cockroachdb',
+    #     'NAME': os.environ.get('COCKROACHDB_DATABASE_NAME'),
+    #     'USER': os.environ.get('COCKROACHDB_SQL_USER'),
+    #     'PASSWORD': os.environ.get('COCKROACHDB_SQL_PASSWORD'),
+    #     'HOST': os.environ.get('COCKROACHDB_HOST'),
+    #     'PORT': os.environ.get('COCKROACHDB_PORT'),
+    # },
+
     'default': {
-        'ENGINE': 'django_cockroachdb',
-        'NAME': os.environ.get('COCKROACHDB_DATABASE_NAME'),
-        'USER': os.environ.get('COCKROACHDB_SQL_USER'),
-        'PASSWORD': os.environ.get('COCKROACHDB_SQL_PASSWORD'),
-        'HOST': os.environ.get('COCKROACHDB_HOST'),
-        'PORT': os.environ.get('COCKROACHDB_PORT'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('AIVEN_DATABASE_NAME'),
+        'USER': os.environ.get('AIVEN_USER'),
+        'PASSWORD': os.environ.get('AIVEN_PASSWORD'),
+        'HOST': os.environ.get('AIVEN_HOST'),
+        'PORT': os.environ.get('AIVEN_PORT'),
     },
 }
 

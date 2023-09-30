@@ -1,24 +1,14 @@
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
+from django.core import serializers
 import random
 import string
 from django.db.models import Q
 from django.http import JsonResponse
+import json
+from django.forms.models import model_to_dict
 
 # Create your views here.
-
-{
-  "sub": "google-oauth2|102871429371675148459",
-  "given_name": "Prince",
-  "family_name": "Igwe",
-  "nickname": "igwep297",
-  "name": "Prince Igwe",
-  "picture": "https://lh3.googleusercontent.com/a/ACg8ocI8qloD1xOLTj0OsAMpX4tUOxF2VHMu5i_F3rYCVEB-wCo=s96-c",
-  "locale": "en",
-  "updated_at": "2023-09-29T01:30:30.292Z",
-  "email": "igwep297@gmail.com",
-  # "email_verified": true
-}
 
 User = get_user_model()
 
@@ -28,19 +18,20 @@ def create_random_password_string(length):
   return result_string
 
 
-def create_user(request, username, email, first_name, last_name, password=None):
+def oidc_get_or_create_user(request, username, email, first_name, last_name):
   try:
     user = User.objects.get( Q(username=username) | Q(email=email))
-    return JsonResponse({"error": "User with email or username already exists"})
+    dict_user = model_to_dict(user)
+    serialized_user = json.dumps(dict_user)
+    return JsonResponse({"data": serialized_user}, status=200)
 
   except User.DoesNotExist:
-    user.objects.create_user(username=username, email=email, first_name=first_name, last_name=last_name)
-
-    if password is not None:
-      user.set_password(password)
-    else:
-      password = create_random_password_string(12)
-      user.set_password(password)
+    password = create_random_password_string(5)
+    print(password)
+    user = User.objects.create_user(username=username, email=email, first_name=first_name, last_name=last_name)
+    user.set_password(password)
     
     user.save()
-    return JsonResponse({ "message": "User created successfully.", "data": user }, status=200)
+    dict_user = model_to_dict(user)
+    serialized_user = json.dumps(dict_user)
+    return JsonResponse({ "message": "User created successfully.", "data": serialized_user }, status=200)

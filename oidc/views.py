@@ -3,6 +3,7 @@ import requests
 from dotenv import load_dotenv
 import os
 from django.http import JsonResponse
+from users.views import oidc_get_or_create_user
 
 auth0_domain = os.environ.get("AUTH0_DOMAIN")
 client_id = os.environ.get('AUTH0_CLIENT_ID')
@@ -58,7 +59,14 @@ def oidc_callback(request):
     try:
       response = requests.get(user_info_url, params=params)
       user_info_response_data = response.json()
-      return JsonResponse(user_info_response_data)
+      # return JsonResponse(user_info_response_data)
+      username = user_info_response_data['nickname']
+      email = user_info_response_data['email']
+      first_name = user_info_response_data['given_name']
+      last_name = user_info_response_data['family_name']
+      user = oidc_get_or_create_user(request, username, email, first_name, last_name)
+      return user
+    
     except requests.exceptions.ConnectionError as e:
       print ( f'Connection Error: {e}' )
     except requests.exceptions.Timeout:
