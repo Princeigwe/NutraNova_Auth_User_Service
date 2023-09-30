@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 import requests
 from dotenv import load_dotenv
 import os
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from users.views import oidc_get_or_create_user
 
 auth0_domain = os.environ.get("AUTH0_DOMAIN")
@@ -70,3 +70,5 @@ def oidc_callback(request):
       print ( f'Connection Error: {e}' )
     except requests.exceptions.Timeout:
       print (f'Timeout Error: {e}')
+
+    return HttpResponse("An error occurred.", status=500)
