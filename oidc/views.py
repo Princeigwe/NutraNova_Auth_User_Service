@@ -71,4 +71,5 @@ def oidc_callback(request):
     except requests.exceptions.Timeout:
       print (f'Timeout Error: {e}')
 
+  else:
     return HttpResponse("An error occurred.", status=500)
