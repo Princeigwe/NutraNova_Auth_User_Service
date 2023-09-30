@@ -38,13 +38,8 @@ def oidc_callback(request):
       "redirect_uri": redirect_uri
   }
 
-  try:
-    token_response = requests.post(token_url, data=token_data)
-    token_response_data = token_response.json()
-  except requests.exceptions.ConnectionError as e:
-    print ( f'Connection Error: {e}' )
-  except requests.exceptions.Timeout:
-    print (f'Timeout Error: {e}')
+  token_response = requests.post(token_url, data=token_data)
+  token_response_data = token_response.json()
   
 
   # retrieve authenticated user details
