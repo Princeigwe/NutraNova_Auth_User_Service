@@ -42,6 +42,8 @@ def oidc_callback(request):
       "redirect_uri": redirect_uri
   }
 
+  error_message = ""
+
   try:
         token_response = requests.post(token_url, data=token_data)
         token_response_data = token_response.json()
