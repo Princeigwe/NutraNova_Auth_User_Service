@@ -6,6 +6,7 @@ import string
 from django.db.models import Q
 from django.http import HttpResponse
 import json
+from utils.jwt_encode_decode import encode_access_token
 
 # Create your views here.
 
@@ -22,7 +23,14 @@ def oidc_get_or_create_user(request, username, email, first_name, last_name):
         user = User.objects.get(Q(username=username) | Q(email=email))
         serialized_data = serializers.serialize("json", [user])
         user_data = json.loads(serialized_data)[0]['fields']  # Parse JSON and access 'fields'
-
+        payload = {
+            "username": user_data["username"],
+            "email": user_data["email"],
+            "first_name": user_data["first_name"],
+            "last_name": user_data["last_name"],
+        }
+        access_token = encode_access_token(payload)
+        user_data["access_token"] = access_token
         return HttpResponse(json.dumps(user_data), content_type="application/json")
 
     except User.DoesNotExist:
@@ -34,9 +42,12 @@ def oidc_get_or_create_user(request, username, email, first_name, last_name):
 
         serialized_data = serializers.serialize("json", [user])
         user_data = json.loads(serialized_data)[0]['fields']  # Parse JSON and access 'fields'
-
+        payload = {
+            "username": user_data["username"],
+            "email": user_data["email"],
+            "first_name": user_data["first_name"],
+            "last_name": user_data["last_name"],
+        }
+        access_token = encode_access_token(payload)
+        user_data["access_token"] = access_token
         return HttpResponse(json.dumps(user_data), content_type="application/json")
-
-    # dict_user = model_to_dict(user)
-    # serialized_user = json.dumps(dict_user)
-    # return JsonResponse({ "message": "User created successfully.", "data": serialized_user }, status=200)
