@@ -8,12 +8,14 @@ from users.views import oidc_get_or_create_user
 auth0_domain = os.environ.get("AUTH0_DOMAIN")
 client_id = os.environ.get('AUTH0_CLIENT_ID')
 client_application_domain = os.environ.get('CLIENT_APPLICATION_DOMAIN')
+environment = os.environ.get("ENVIRONMENT")
+
 
 
 def oidc_authenticate(request):
   auth0_authorize_url = f'https://{auth0_domain}/authorize'
   redirect_uri = f"http://{client_application_domain}/oidc/callback/" 
-  if redirect_uri is None:
+  if environment is not "development":
     redirect_uri = f"https://{client_application_domain}/oidc/callback/"
 
   params = {
