@@ -42,33 +42,66 @@ def oidc_callback(request):
       "redirect_uri": redirect_uri
   }
 
-  token_response = requests.post(token_url, data=token_data)
-  token_response_data = token_response.json()
+  try:
+        token_response = requests.post(token_url, data=token_data)
+        token_response_data = token_response.json()
+
+        # Retrieve authenticated user details
+        if "access_token" in token_response_data:
+            access_token = token_response_data['access_token']
+            user_info_url = f'https://{auth0_domain}/userinfo'
+            params = {
+                "access_token": access_token
+            }
+
+            response = requests.get(user_info_url, params=params)
+            user_info_response_data = response.json()
+
+            username = user_info_response_data.get('nickname', '')
+            email = user_info_response_data.get('email', '')
+            first_name = user_info_response_data.get('given_name', '')
+            last_name = user_info_response_data.get('family_name', '')
+
+            # Assuming oidc_get_or_create_user returns a valid user object
+            user = oidc_get_or_create_user(request, username, email, first_name, last_name)
+            return JsonResponse({"message": "User created successfully."})  # You can customize this response
+
+  except requests.exceptions.ConnectionError as e:
+      error_message = f'Connection Error: {e}'
+  except requests.exceptions.Timeout as e:
+      error_message = f'Timeout Error: {e}'
+  except Exception as e:
+      error_message = f'An unexpected error occurred: {e}'
+
+  return HttpResponse(f'An error occurred: {error_message}', status=500)
+
+  # token_response = requests.post(token_url, data=token_data)
+  # token_response_data = token_response.json()
   
 
-  # retrieve authenticated user details
-  if "access_token" in token_response_data:
-    access_token = token_response_data['access_token']
-    user_info_url = f'https://{auth0_domain}/userinfo'
+  # # retrieve authenticated user details
+  # if "access_token" in token_response_data:
+  #   access_token = token_response_data['access_token']
+  #   user_info_url = f'https://{auth0_domain}/userinfo'
 
-    params = {
-        "access_token": access_token
-    }
+  #   params = {
+  #       "access_token": access_token
+  #   }
 
-    try:
-      response = requests.get(user_info_url, params=params)
-      user_info_response_data = response.json()
-      # return JsonResponse(user_info_response_data)
-      username = user_info_response_data['nickname']
-      email = user_info_response_data['email']
-      first_name = user_info_response_data['given_name']
-      last_name = user_info_response_data['family_name']
-      user = oidc_get_or_create_user(request, username, email, first_name, last_name)
-      return user
+  #   try:
+  #     response = requests.get(user_info_url, params=params)
+  #     user_info_response_data = response.json()
+  #     # return JsonResponse(user_info_response_data)
+  #     username = user_info_response_data['nickname']
+  #     email = user_info_response_data['email']
+  #     first_name = user_info_response_data['given_name']
+  #     last_name = user_info_response_data['family_name']
+  #     user = oidc_get_or_create_user(request, username, email, first_name, last_name)
+  #     return user
     
-    except requests.exceptions.ConnectionError as e:
-      print ( f'Connection Error: {e}' )
-      return HttpResponse(f'A Connection error occurred: {e}', status=500)
-    except requests.exceptions.Timeout:
-      return HttpResponse(f'A TimeOut error occurred: {e}', status=500)
+  #   except requests.exceptions.ConnectionError as e:
+  #     print ( f'Connection Error: {e}' )
+  #     return HttpResponse(f'A Connection error occurred: {e}', status=500)
+  #   except requests.exceptions.Timeout:
+  #     return HttpResponse(f'A TimeOut error occurred: {e}', status=500)
       
