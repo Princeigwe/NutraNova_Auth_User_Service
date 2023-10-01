@@ -34,7 +34,10 @@ from django.http import HttpResponse
 
 def oidc_callback(request):
     authorization_code = request.GET.get("code")
-    redirect_uri = f"http://{client_application_domain}/oidc/callback/"
+    if environment != "development":
+      redirect_uri = f"https://{client_application_domain}/oidc/callback/"
+    else:
+      redirect_uri = f"http://{client_application_domain}/oidc/callback/"
 
     # exchanging code for token
     token_url = f'https://{auth0_domain}/oauth/token'
