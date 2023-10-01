@@ -15,9 +15,11 @@ environment = os.environ.get("ENVIRONMENT")
 
 def oidc_authenticate(request):
   auth0_authorize_url = f'https://{auth0_domain}/authorize'
-  # redirect_uri = f"http://{client_application_domain}/oidc/callback/" 
   if environment != "development":
     redirect_uri = f"https://{client_application_domain}/oidc/callback/"
+  else:
+    redirect_uri = f"http://{client_application_domain}/oidc/callback/" 
+    
 
   params = {
       "response_type": "code",
@@ -72,7 +74,3 @@ def oidc_callback(request):
       return HttpResponse(f'A Connection error occurred: {e}', status=500)
     except requests.exceptions.Timeout:
       return HttpResponse(f'A TimeOut error occurred: {e}', status=500)
-
-  else:
-    url = reverse('oidc_authenticate')
-    return HttpResponseRedirect(url)
