@@ -71,5 +71,3 @@ def oidc_callback(request):
       return HttpResponse(f'A Connection error occurred: {e}', status=500)
     except requests.exceptions.Timeout:
       return HttpResponse(f'A TimeOut error occurred: {e}', status=500)
-  
-  return HttpResponse("Error occurred", status=500)
