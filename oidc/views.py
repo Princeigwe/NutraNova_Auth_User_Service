@@ -66,7 +66,7 @@ def oidc_callback(request):
             first_name = user_info_response_data['given_name']
             last_name = user_info_response_data['family_name']
             user = oidc_get_or_create_user(request, username, email, first_name, last_name)
-            return HttpResponse(user)
+            return user
 
         except requests.exceptions.ConnectionError as e:
             print(f'Connection Error: {e}')
@@ -75,9 +75,6 @@ def oidc_callback(request):
             print(f'Timeout Error: {e}')
             return HttpResponse(f'A Timeout error occurred: {e}', status=500)
 
-    # Handle the case where "access_token" is not in token_response_data
-    else:
-        return HttpResponse("Authorization code exchange failed.", status=400)
 
 
 # def oidc_callback(request):
