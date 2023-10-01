@@ -14,7 +14,7 @@ environment = os.environ.get("ENVIRONMENT")
 
 def oidc_authenticate(request):
   auth0_authorize_url = f'https://{auth0_domain}/authorize'
-  redirect_uri = f"http://{client_application_domain}/oidc/callback/" 
+  # redirect_uri = f"http://{client_application_domain}/oidc/callback/" 
   if environment != "development":
     redirect_uri = f"https://{client_application_domain}/oidc/callback/"
 
