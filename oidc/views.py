@@ -67,7 +67,7 @@ def oidc_callback(request):
       first_name = user_info_response_data['given_name']
       last_name = user_info_response_data['family_name']
       user = oidc_get_or_create_user(request, username, email, first_name, last_name)
-      return user
+      return HttpResponse(user)
     
     except requests.exceptions.ConnectionError as e:
       print ( f'Connection Error: {e}' )
