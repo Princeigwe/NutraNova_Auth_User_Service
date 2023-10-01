@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 import requests
 from dotenv import load_dotenv
 import os
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from users.views import oidc_get_or_create_user
+from django.urls import reverse
 
 auth0_domain = os.environ.get("AUTH0_DOMAIN")
 client_id = os.environ.get('AUTH0_CLIENT_ID')
@@ -71,3 +72,7 @@ def oidc_callback(request):
       return HttpResponse(f'A Connection error occurred: {e}', status=500)
     except requests.exceptions.Timeout:
       return HttpResponse(f'A TimeOut error occurred: {e}', status=500)
+
+  else:
+    url = reverse('oidc_authenticate')
+    return HttpResponseRedirect(url)
