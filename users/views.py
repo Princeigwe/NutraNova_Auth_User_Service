@@ -51,3 +51,8 @@ def oidc_get_or_create_user(request, username, email, first_name, last_name):
         access_token = encode_access_token(payload)
         user_data["access_token"] = access_token
         return HttpResponse(json.dumps(user_data), content_type="application/json")
+
+
+
+def onboard_user():
+    pass
