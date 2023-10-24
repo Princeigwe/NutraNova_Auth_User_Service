@@ -44,16 +44,3 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
   def __str__(self):
     return f'{self.email}'
-
-# class User(models.Model):
-#   first_name = models.CharField(max_length=20)
-#   last_name = models.CharField(max_length=20)
-#   email = models.CharField(max_length=20)
-#   username = models.CharField(max_length=20)
-#   password = models.CharField(max_length=50)
-  
-#   USERNAME_FIELD = 'email'
-#   REQUIRED_FIELDS = []
-
-# def __str__(self):
-#   return f'{self.first_name} {self.last_name}'
