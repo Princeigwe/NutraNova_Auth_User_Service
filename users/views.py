@@ -13,9 +13,9 @@ from utils.jwt_encode_decode import encode_access_token
 User = get_user_model()
 
 def create_random_password_string(length):
-  letters = string.ascii_letters
-  result_string = ''.join(random.choice(letters) for i in range(length))
-  return result_string
+    letters = string.ascii_letters
+    result_string = ''.join(random.choice(letters) for i in range(length))
+    return result_string
 
 
 def oidc_get_or_create_user(request, username, email, first_name, last_name):
