@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from enums import choices
+from multiselectfield import MultiSelectField
 
 from .managers import CustomUserManager
 
@@ -25,11 +26,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
   no_followings       = models.PositiveBigIntegerField(default=0, blank=True)
   dietary_preference  = models.CharField(max_length=50, choices=choices.DIETARY_PREFERENCES_CHOICES, blank=True, null=True)
   health_goal         = models.CharField(max_length=50, choices=choices.HEALTH_GOALS_CHOICES, default="OVERALL_WELLNESS")
-  allergens           = models.ManyToManyField("self", choices=choices.ALLERGEN_CHOICES, blank=True)
+  allergens           = MultiSelectField(choices=choices.ALLERGEN_CHOICES, blank=True, max_length=50)
   activity_level      = models.CharField(max_length=50, choices=choices.ACTIVITY_LEVELS)
-  cuisines            = models.ManyToManyField("self", choices=choices.CUISINES_CHOICES)
-  medical_conditions  = models.ManyToManyField("self", choices=choices.MEDICAL_CONDITIONS_CHOICES, blank=True)
-  taste_preferences   = models.ManyToManyField("self", choices=choices.TASTE_PREFERENCES_CHOICES, blank=True)
+  cuisines            = MultiSelectField(choices=choices.CUISINES_CHOICES, max_length=50, default="ITALIAN")
+  medical_conditions  = MultiSelectField(choices=choices.MEDICAL_CONDITIONS_CHOICES, blank=True, max_length=50)
+  taste_preferences   = MultiSelectField(choices=choices.TASTE_PREFERENCES_CHOICES, blank=True, max_length=50)
 
 
   # fields for dietician/health practitioners

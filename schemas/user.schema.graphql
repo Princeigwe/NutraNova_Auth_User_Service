@@ -108,21 +108,21 @@ enum HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES{
 
 
 type User{
-  firstName: String!
-  lastName: String!
-  email: String!
-  username: String!
-  password: String!
+  firstName: String
+  lastName: String
+  email: String
+  username: String
+  password: String
   age: Int!
   gender: GENDER_CHOICES!
   role: ROLE_CHOICES!
-  dietaryPreference: DIETARY_PREFERENCES_CHOICES!
-  healthGoal: HEALTH_GOALS_CHOICES!
+  dietaryPreference: DIETARY_PREFERENCES_CHOICES
+  healthGoal: HEALTH_GOALS_CHOICES
   allergens: [ALLERGEN_CHOICES]
-  activityLevel: ACTIVITY_LEVELS!
-  cuisines: [CUISINES_CHOICES!]!
+  activityLevel: ACTIVITY_LEVELS
+  cuisines: [CUISINES_CHOICES]
   medicalConditions: [MEDICAL_CONDITIONS_CHOICES]
-  tastePreferences: [TASTE_PREFERENCES_CHOICES!]!
+  tastePreferences: [TASTE_PREFERENCES_CHOICES]
   specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
   professionalStatement: String
   availability: Boolean
@@ -132,13 +132,13 @@ input OnboardUserInput{
   age: Int!
   gender: GENDER_CHOICES!
   role: ROLE_CHOICES!
-  dietaryPreference: DIETARY_PREFERENCES_CHOICES!
-  healthGoal: HEALTH_GOALS_CHOICES!
-  allergens: [ALLERGEN_CHOICES]!
-  activityLevel: ACTIVITY_LEVELS!
-  cuisines: [CUISINES_CHOICES!]!
-  medicalConditions: [MEDICAL_CONDITIONS_CHOICES]!
-  tastePreferences: [TASTE_PREFERENCES_CHOICES!]!
+  dietaryPreference: DIETARY_PREFERENCES_CHOICES
+  healthGoal: HEALTH_GOALS_CHOICES
+  allergens: [ALLERGEN_CHOICES]
+  activityLevel: ACTIVITY_LEVELS
+  cuisines: [CUISINES_CHOICES]
+  medicalConditions: [MEDICAL_CONDITIONS_CHOICES]
+  tastePreferences: [TASTE_PREFERENCES_CHOICES]
   specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
   professionalStatement: String
   availability: Boolean

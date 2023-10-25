@@ -1,7 +1,12 @@
-from .models import CustomUser
 from utils.jwt_encode_decode import decode_access_token
+from channels.db import database_sync_to_async
+from django.contrib.auth import get_user_model
 
-def resolve_onboardUser(_, input:dict, info):
+User = get_user_model()
+
+
+@database_sync_to_async
+def resolve_onboardUser(_, info, input:dict):
   # request = info.context["request"]
   # user = request.user
   request = info.context["request"]
@@ -9,9 +14,16 @@ def resolve_onboardUser(_, input:dict, info):
   parts = authorization_header.split(" ")
   token = parts[1]
   decoded_data = decode_access_token(token)
-  user_email = decoded_data.email
+  print(decoded_data)
+  user_email = decoded_data['email']
+  username = decoded_data['username']
+  user_firstname = decoded_data['first_name']
+  user_lastname = decoded_data['last_name']
+  print(user_email)
+  print(username)
+  print(user_firstname)
+  print(user_lastname)
 
-  
   clean_input = {
     "age":                  input["age"],
     "gender":               input["gender"],
@@ -28,8 +40,11 @@ def resolve_onboardUser(_, input:dict, info):
     "availability":           input["availability"]
   }
   try:
-    user = CustomUser.objects.get(email=user_email)
-
+    user = User.objects.get(username=username)
+    print(user)
+    # print("hello")
+    user.first_name           = user_firstname
+    user.last_name            = user_lastname
     user.age                  = clean_input["age"]
     user.gender               = clean_input["gender"]
     user.role                 = clean_input["role"]
@@ -46,7 +61,7 @@ def resolve_onboardUser(_, input:dict, info):
       "message": "User On-boarded",
       "user": user
     }
-  except ValueError as error:
+  except User.DoesNotExist as error:
     return {
       "error": str(error)
     }
