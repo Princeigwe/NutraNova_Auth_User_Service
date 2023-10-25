@@ -1,4 +1,56 @@
 from .models import CustomUser
+from utils.jwt_encode_decode import decode_access_token
+
+def resolve_onboardUser(_, input:dict, info):
+  # request = info.context["request"]
+  # user = request.user
+  request = info.context["request"]
+  authorization_header = request.headers.get("Authorization")
+  parts = authorization_header.split(" ")
+  token = parts[1]
+  decoded_data = decode_access_token(token)
+  user_email = decoded_data.email
+
+  
+  clean_input = {
+    "age":                  input["age"],
+    "gender":               input["gender"],
+    "role":                 input["role"],
+    "dietaryPreference":    input["dietaryPreference"],
+    "healthGoal":           input["healthGoal"],
+    "allergens":            input["allergens"],
+    "activityLevel":        input["activityLevel"],
+    "cuisines":             input["cuisines"],
+    "medicalConditions":    input["medicalConditions"],
+    "tastePreferences":     input["tastePreferences"],
+    "specialization":       input["specialization"],
+    "professionalStatement":  input["professionalStatement"],
+    "availability":           input["availability"]
+  }
+  try:
+    user = CustomUser.objects.get(email=user_email)
+
+    user.age                  = clean_input["age"]
+    user.gender               = clean_input["gender"]
+    user.role                 = clean_input["role"]
+    user.dietary_preference   = clean_input["dietaryPreference"]
+    user.health_goal          = clean_input["healthGoal"]
+    user.allergens            = clean_input["allergens"]
+    user.activity_level       = clean_input["activityLevel"]
+    user.cuisines             = clean_input["cuisines"]
+    user.medical_conditions   = clean_input["medicalConditions"]
+    user.taste_preferences    = clean_input["tastePreferences"]
+    user.save()
+    
+    return {
+      "message": "User On-boarded",
+      "user": user
+    }
+  except ValueError as error:
+    return {
+      "error": str(error)
+    }
+
 
 # def resolve_createUser(*_, input: dict):
 #   clean_input = {

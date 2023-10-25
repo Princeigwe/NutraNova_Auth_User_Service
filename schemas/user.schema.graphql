@@ -1,18 +1,149 @@
+enum GENDER_CHOICES{
+  MALE
+  FEMALE
+}
+
+enum ROLE_CHOICES{
+  USER
+  HEALTH_PRACTITIONER
+}
+
+enum DIETARY_PREFERENCES_CHOICES{
+  VEGETARIAN
+  VEGAN
+  PESCATARIAN
+  GLUTEN_FREE
+  DAIRY_FREE
+  LOW_CARB
+}
+
+enum HEALTH_GOALS_CHOICES{
+  WEIGHT_LOSS
+  MUSCLE_GAIN
+  HEART_HEALTH
+  LOW_CHOLESTEROL
+  BETTER_SLEEP
+  HEALTHY_AGING
+  OVERALL_WELLNESS
+}
+
+enum ALLERGEN_CHOICES {
+  MILK
+  EGG
+  PEANUT
+  SOY
+  WHEAT
+  TREE_NUTS
+  SHELLFISH
+  SESAME
+  GARLIC
+}
+
+enum ACTIVITY_LEVELS{
+  SEDENTARY
+  LIGHTLY_ACTIVE
+  MODERATELY_ACTIVE
+  VERY_ACTIVE
+  SUPER_ACTIVE
+}
+
+enum CUISINES_CHOICES{
+  ITALIAN
+  MEDITERRAENIAN
+  ASIAN
+  MEXICAN
+  MIDDLE_EASTERN
+  AMERICAN
+  FRENCH
+  INDIAN
+  AFRICAN
+}
+
+enum MEDICAL_CONDITIONS_CHOICES{
+  DIABETICS
+  HYPERTENSION
+  KIDNEY_DISEASE
+  LACTOSE_INTOLERANCE
+  FRUCTOSE_INTOLERANCE
+  OSTEOPOROSIS
+  PREGNANCY
+}
+
+enum TASTE_PREFERENCES_CHOICES{
+  SWEET
+  SAVOURY
+  SPICY
+  BITTER
+  SOUR
+  HERBACEOUS
+  UMAMI
+  GARLICKY
+  CITRUSY
+  MILD
+  AROMATIC
+}
+
+enum HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES{
+  GENERAL
+  SPORTS
+  PEDIATRIC
+  WEIGHT_LOSS
+  DIABETICS
+  HEART_HEALTH
+  GASTROENTEROLOGY
+  ONCOLOGY
+  RENAL
+  VEGAN
+  FOOD_ALLERGIES
+  GERIATRICS
+  PREGNANCY
+  POSTPARTUM
+  EATING_DISORDERS
+  MEAL_PLANNING
+  CULINARY
+  NUTRITIONAL_SUPPLEMENTS
+  PUBLIC_HEALTH
+  WEIGHT_GAIN
+}
+
+
 type User{
-  first_name: String!
-  last_name: String!
+  firstName: String!
+  lastName: String!
   email: String!
   username: String!
   password: String!
+  age: Int!
+  gender: GENDER_CHOICES!
+  role: ROLE_CHOICES!
+  dietaryPreference: DIETARY_PREFERENCES_CHOICES!
+  healthGoal: HEALTH_GOALS_CHOICES!
+  allergens: [ALLERGEN_CHOICES]
+  activityLevel: ACTIVITY_LEVELS!
+  cuisines: [CUISINES_CHOICES!]!
+  medicalConditions: [MEDICAL_CONDITIONS_CHOICES]
+  tastePreferences: [TASTE_PREFERENCES_CHOICES!]!
+  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  professionalStatement: String
+  availability: Boolean
 }
 
-input CreateUserInput{
-  first_name: String!
-  last_name: String!
-  email: String! 
-  username: String!
-  password: String!
+input OnboardUserInput{
+  age: Int!
+  gender: GENDER_CHOICES!
+  role: ROLE_CHOICES!
+  dietaryPreference: DIETARY_PREFERENCES_CHOICES!
+  healthGoal: HEALTH_GOALS_CHOICES!
+  allergens: [ALLERGEN_CHOICES]!
+  activityLevel: ACTIVITY_LEVELS!
+  cuisines: [CUISINES_CHOICES!]!
+  medicalConditions: [MEDICAL_CONDITIONS_CHOICES]!
+  tastePreferences: [TASTE_PREFERENCES_CHOICES!]!
+  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  professionalStatement: String
+  availability: Boolean
 }
+
 
 type UserResponse{
   message: String
@@ -31,5 +162,5 @@ type Query{
 }
 
 type Mutation{
-  createUser(input: CreateUserInput): UserResponse!
+  onboardUser(input: OnboardUserInput): UserResponse!
 }
