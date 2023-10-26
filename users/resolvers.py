@@ -1,8 +1,7 @@
 from utils.jwt_encode_decode import decode_access_token
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
-from django.core import serializers
-import json
+from enums.choices import ROLE_CHOICES
 
 User = get_user_model()
 
