@@ -113,9 +113,9 @@ type User{
   email: String
   username: String
   password: String
-  age: Int!
-  gender: GENDER_CHOICES!
-  role: ROLE_CHOICES!
+  age: Int
+  gender: GENDER_CHOICES
+  role: ROLE_CHOICES
   dietaryPreference: DIETARY_PREFERENCES_CHOICES
   healthGoal: HEALTH_GOALS_CHOICES
   allergens: [ALLERGEN_CHOICES]
@@ -132,15 +132,15 @@ input OnboardUserInput{
   age: Int!
   gender: GENDER_CHOICES!
   role: ROLE_CHOICES!
-  dietaryPreference: DIETARY_PREFERENCES_CHOICES
-  healthGoal: HEALTH_GOALS_CHOICES
+  dietary_preference: DIETARY_PREFERENCES_CHOICES!
+  health_goal: HEALTH_GOALS_CHOICES!
   allergens: [ALLERGEN_CHOICES]
-  activityLevel: ACTIVITY_LEVELS
-  cuisines: [CUISINES_CHOICES]
-  medicalConditions: [MEDICAL_CONDITIONS_CHOICES]
-  tastePreferences: [TASTE_PREFERENCES_CHOICES]
+  activity_level: ACTIVITY_LEVELS!
+  cuisines: [CUISINES_CHOICES!]!
+  medical_conditions: [MEDICAL_CONDITIONS_CHOICES]
+  taste_preferences: [TASTE_PREFERENCES_CHOICES!]!
   specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
-  professionalStatement: String
+  professional_statement: String
   availability: Boolean
 }
 
@@ -153,14 +153,18 @@ type UserResponse{
 
 type UsersResponse{
   message: String
-  users: [User]!
+  users: [User]
 }
 
 type Query{
   users: UsersResponse
   user: UserResponse
+  onboardUser: UsersResponse
+
 }
 
 type Mutation{
-  onboardUser(input: OnboardUserInput): UserResponse!
+  # onboardUser(input: OnboardUserInput): UserResponse
+  onboardUser(input: OnboardUserInput): User
+
 }

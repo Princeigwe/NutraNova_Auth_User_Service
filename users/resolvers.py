@@ -8,38 +8,29 @@ User = get_user_model()
 
 @database_sync_to_async
 def resolve_onboardUser(_, info, input:dict):
-  print("khkh")
+
+  request = info.context["request"] # get http request from info.context
+  authorization_header = request.headers.get("Authorization") # retrieve Authorization header to fetch value
+  parts = authorization_header.split(" ") # split value by the space
+  token = parts[1] # get the token
+  decoded_data = decode_access_token(token) # decode token
+  user_email = decoded_data['email']
   try:
-    user = User.objects.get(email="pf708495@gmail.com")
-    print(user)
+    user = User.objects.get(email=user_email)
+    user.age = input['age']
+    user.gender = input['gender']
+    user.role = input['role']
+    user.dietary_preference = input['dietary_preference']
+    user.health_goal = input['health_goal']
+    user.allergens = input['allergens']
+    user.activity_level = input['activity_level']
+    user.cuisines = input['cuisines']
+    user.medical_conditions = input['medical_conditions']
+    user.taste_preferences = input['taste_preferences']
+    user.specialization = input['specialization']
+    user.professional_statement = input['professional_statement']
+    user.availability = input['availability']
+    user.save()
     return user
   except User.DoesNotExist as error:
     print(error)
-
-# def resolve_createUser(*_, input: dict):
-#   clean_input = {
-#     "first_name": input["first_name"], 
-#     "last_name": input["last_name"], 
-#     "email": input["email"], 
-#     "username": input["username"],
-#     "password": input["password"], 
-#   }
-#   try:
-#     user = User.objects.create(first_name=clean_input["first_name"], last_name=clean_input["last_name"], email=clean_input["email"], username=clean_input["username"], password=clean_input["password"])
-#     user.save()
-#     return {
-#       "message": "User Created",
-#       "user": user
-#     }
-#   except ValueError as error:
-#     return {
-#       "error": str(error)
-#     }
-
-
-# def resolve_users(*_):
-#   users = User.objects.all()
-#   return {
-#     "message": "Registered Users",
-#     "users": users
-#   }

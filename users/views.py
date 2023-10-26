@@ -38,10 +38,12 @@ def oidc_get_or_create_user(request, username, email, first_name, last_name):
         print(password)
         user = User.objects.create_user(username=username, email=email, first_name=first_name, last_name=last_name)
         user.set_password(password)
+        print(user)
         user.save()
 
         serialized_data = serializers.serialize("json", [user])
         user_data = json.loads(serialized_data)[0]['fields']  # Parse JSON and access 'fields'
+        print(user_data)
         payload = {
             "username": user_data["username"],
             "email": user_data["email"],
@@ -52,7 +54,3 @@ def oidc_get_or_create_user(request, username, email, first_name, last_name):
         user_data["access_token"] = access_token
         return HttpResponse(json.dumps(user_data), content_type="application/json")
 
-
-
-def onboard_user():
-    pass
