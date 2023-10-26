@@ -16,7 +16,7 @@ def resolve_onboardUser(_, info, input:dict):
   user_email = decoded_data['email']
 
   if input['role'] == "USER" and ('specialization' in input):
-    raise Exception("Invalid action: Cannot set specialization, professional statement and availability as with USER role.")
+    raise Exception("Invalid action: Cannot set specialization with USER role.")
 
   try:
     user = User.objects.get(email=user_email)
@@ -58,9 +58,12 @@ def resolve_updateProfile(_, info, input:dict):
 
   try:
     user = User.objects.get(email=user_email)
+    if user.role == "USER" and ('specialization' in input):
+      raise Exception("Invalid action: Cannot set specialization with USER role.")
+
     for key, value in input.items():
       if value is not None:
-        setattr(user, key, value)
+        setattr(user, key, value) # set all attribute key value values of user to attribute key values of input
     user.save()
     return user
   except User.DoesNotExist:
