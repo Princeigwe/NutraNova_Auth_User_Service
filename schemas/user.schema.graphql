@@ -146,7 +146,6 @@ input OnboardUserInput{
 
 
 type UserResponse{
-  message: String
   error: String
   user: User
 }

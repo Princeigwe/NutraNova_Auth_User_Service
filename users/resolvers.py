@@ -15,6 +15,8 @@ def resolve_onboardUser(_, info, input:dict):
   decoded_data = decode_access_token(token) # decode token
   user_email = decoded_data['email']
   try:
+    if input['role'] == "USER" and (input['specialization'] or input['professional_statement'] or input['availability']):
+      raise Exception("Invalid action: Cannot set specialization, professional statement and availability as with USER role.")
     user = User.objects.get(email=user_email)
     user.age = input['age']
     user.gender = input['gender']
