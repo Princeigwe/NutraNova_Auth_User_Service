@@ -35,3 +35,4 @@ def resolve_onboardUser(_, info, input:dict):
     return user
   except User.DoesNotExist as error:
     print(error)
+    raise Exception(error)
