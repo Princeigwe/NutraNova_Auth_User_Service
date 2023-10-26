@@ -145,6 +145,21 @@ input OnboardUserInput{
   availability: Boolean
 }
 
+input UpdateProfileInput{
+  age: Int
+  gender: GENDER_CHOICES
+  dietary_preference: DIETARY_PREFERENCES_CHOICES
+  health_goal: HEALTH_GOALS_CHOICES
+  allergens: [ALLERGEN_CHOICES]
+  activity_level: ACTIVITY_LEVELS
+  cuisines: [CUISINES_CHOICES]
+  medical_conditions: [MEDICAL_CONDITIONS_CHOICES]
+  taste_preferences: [TASTE_PREFERENCES_CHOICES]
+  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  professional_statement: String
+  availability: Boolean
+}
+
 
 type UserResponse{
   error: String
@@ -166,5 +181,5 @@ type Query{
 type Mutation{
   # onboardUser(input: OnboardUserInput): UserResponse
   onboardUser(input: OnboardUserInput): User
-
+  updateProfile(input: UpdateProfileInput): User
 }

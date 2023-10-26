@@ -12,6 +12,7 @@ query = QueryType()
 mutation = MutationType()
 # mutation.set_field('createUser', resolvers.resolve_createUser)
 mutation.set_field("onboardUser", resolvers.resolve_onboardUser)
+mutation.set_field("updateProfile", resolvers.resolve_updateProfile)
 
 
 

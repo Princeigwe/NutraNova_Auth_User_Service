@@ -1,6 +1,7 @@
 from utils.jwt_encode_decode import decode_access_token
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
+from utils.get_token_email import get_user_email
 
 User = get_user_model()
 
@@ -43,6 +44,23 @@ def resolve_onboardUser(_, info, input:dict):
     if 'availability' in input:
       user.availability = input['availability']
     
+    user.save()
+    return user
+  except User.DoesNotExist:
+    print('User does not exist')
+    raise Exception('User does not exist')
+
+
+
+@database_sync_to_async
+def resolve_updateProfile(_, info, input:dict):
+  user_email = get_user_email(info)
+
+  try:
+    user = User.objects.get(email=user_email)
+    for key, value in input.items():
+      if value is not None:
+        setattr(user, key, value)
     user.save()
     return user
   except User.DoesNotExist:
