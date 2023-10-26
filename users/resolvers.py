@@ -13,23 +13,33 @@ def resolve_onboardUser(_, info, input:dict):
   token = parts[1] # get the token
   decoded_data = decode_access_token(token) # decode token
   user_email = decoded_data['email']
+
+  # if input['role'] == "USER" and (input['specialization'] or input['professional_statement'] or input['availability'] != None):
+  #   raise Exception("Invalid action: Cannot set specialization, professional statement and availability as with USER role.")
+
   try:
-    if input['role'] == "USER" and (input['specialization'] or input['professional_statement'] or input['availability']):
-      raise Exception("Invalid action: Cannot set specialization, professional statement and availability as with USER role.")
     user = User.objects.get(email=user_email)
     user.age = input['age']
     user.gender = input['gender']
     user.role = input['role']
     user.dietary_preference = input['dietary_preference']
     user.health_goal = input['health_goal']
-    user.allergens = input['allergens']
     user.activity_level = input['activity_level']
     user.cuisines = input['cuisines']
-    user.medical_conditions = input['medical_conditions']
     user.taste_preferences = input['taste_preferences']
-    user.specialization = input['specialization']
-    user.professional_statement = input['professional_statement']
-    user.availability = input['availability']
+
+
+    if 'allergens' in input:
+      user.allergens = input['allergens']
+    if 'medical_conditions' in input:
+      user.medical_conditions = input['medical_conditions']
+    if 'specialization' in input:
+      user.specialization = input['specialization'] 
+    if 'professional_statement' in input:
+      user.professional_statement = input['professional_statement']
+    if 'availability' in input:
+      user.availability = input['availability']
+    
     user.save()
     return user
   except User.DoesNotExist:
