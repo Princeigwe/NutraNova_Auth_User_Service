@@ -126,6 +126,7 @@ type User{
   specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
   professionalStatement: String
   availability: Boolean
+  isOnBoarded: Boolean
 }
 
 input OnboardUserInput{

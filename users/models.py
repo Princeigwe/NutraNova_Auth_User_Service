@@ -34,9 +34,11 @@ class CustomUser(AbstractUser):
 
 
   # fields for dietician/health practitioners
-  specialization          = models.CharField(max_length=50, choices=choices.HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES, blank=True)
-  professional_statement  = models.TextField(max_length=200, blank=True)
+  specialization          = models.CharField(max_length=50, choices=choices.HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES, blank=True, null=True)
+  professional_statement  = models.TextField(max_length=200, blank=True, null=True)
   availability            = models.BooleanField(blank=True, null=True)
+
+  is_on_boarded           = models.BooleanField(default=False)
   # USERNAME_FIELD = 'email'
   USERNAME_FIELD = 'username'
   REQUIRED_FIELDS = []

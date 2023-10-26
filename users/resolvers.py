@@ -19,6 +19,8 @@ def resolve_onboardUser(_, info, input:dict):
 
   try:
     user = User.objects.get(email=user_email)
+    if user.is_on_boarded:
+      raise Exception( "User is already on-boarded. Update profile to make changes." )
     user.age = input['age']
     user.gender = input['gender']
     user.role = input['role']
@@ -27,8 +29,9 @@ def resolve_onboardUser(_, info, input:dict):
     user.activity_level = input['activity_level']
     user.cuisines = input['cuisines']
     user.taste_preferences = input['taste_preferences']
+    user.is_on_boarded = True
 
-
+    # optional input fields
     if 'allergens' in input:
       user.allergens = input['allergens']
     if 'medical_conditions' in input:
