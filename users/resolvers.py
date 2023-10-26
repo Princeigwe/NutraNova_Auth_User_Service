@@ -33,6 +33,6 @@ def resolve_onboardUser(_, info, input:dict):
     user.availability = input['availability']
     user.save()
     return user
-  except User.DoesNotExist as error:
-    print(error)
-    raise Exception(error)
+  except User.DoesNotExist:
+    print('User does not exist')
+    raise Exception('User does not exist')
