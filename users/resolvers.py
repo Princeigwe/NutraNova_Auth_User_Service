@@ -63,7 +63,12 @@ def resolve_updateProfile(_, info, input:dict):
 
     for key, value in input.items():
       if value is not None:
-        setattr(user, key, value) # set all attribute key value values of user to attribute key values of input
+        if 'cuisines' in input :
+          if len(input['cuisines']) != 0:
+            if 'taste_preferences' in input:
+              if len(input['taste_preferences']) != 0:
+                setattr(user, key, value)
+    
     user.save()
     return user
   except User.DoesNotExist:
