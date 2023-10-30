@@ -160,6 +160,10 @@ input UpdateProfileInput{
   availability: Boolean
 }
 
+input UpdateUsername{
+  username: String!
+}
+
 
 type UserResponse{
   error: String
@@ -182,4 +186,5 @@ type Mutation{
   # onboardUser(input: OnboardUserInput): UserResponse
   onboardUser(input: OnboardUserInput): User
   updateProfile(input: UpdateProfileInput): User
+  updateUsername(input: UpdateUsername): User
 }

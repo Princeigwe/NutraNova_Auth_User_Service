@@ -74,3 +74,22 @@ def resolve_updateProfile(_, info, input:dict):
   except User.DoesNotExist:
     print('User does not exist')
     raise Exception('User does not exist')
+
+
+
+@database_sync_to_async
+def resolve_updateUsername(_, info, input:dict):
+  user_email = get_user_email(info)
+
+  desired_username = input['username']
+  results = User.objects.filter(username=input['username'])
+  if len(results) != 0:
+    raise Exception(f"{desired_username} is already taken")
+  
+  try:
+    user = User.objects.get(email=user_email)
+    user.username = input['username']
+    user.save()
+    return user
+  except User.DoesNotExist:
+    raise Exception("User does not exist")
