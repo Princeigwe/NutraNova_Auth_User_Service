@@ -19,10 +19,10 @@ jobs:
           pip-dependency-file: requirements.txt
           pkg-manager: pip
           args: django-pytest
-      # - run:
-      #     name: Test API
-      #     command: |
-      #       python3 -m pytest
+      - run:
+          name: Test API
+          command: |
+            python3 -m pytest -vv
   
   deploy-with-vercel-cli:
     executor: node/default
