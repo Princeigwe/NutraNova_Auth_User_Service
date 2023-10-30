@@ -18,7 +18,7 @@ jobs:
       - python/install-packages:
           pip-dependency-file: requirements.txt
           pkg-manager: pip
-          args: django-pytest
+          args: django-pytest PyJWT
       - run:
           name: Test API
           command: |
