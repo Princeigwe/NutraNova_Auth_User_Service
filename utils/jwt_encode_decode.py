@@ -19,4 +19,5 @@ def decode_access_token(token):
     return decoded_data
   except jwt.ExpiredSignatureError as e:
     message = f'Invalid token: {e}'
-    return message
+    # return message
+    raise Exception(message)
