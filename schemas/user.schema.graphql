@@ -175,6 +175,10 @@ type UsersResponse{
   users: [User]
 }
 
+type UserFollowingResponse{
+  message: String
+}
+
 type Query{
   # users: UsersResponse
   # user: UserResponse
@@ -187,4 +191,5 @@ type Mutation{
   onboardUser(input: OnboardUserInput): User
   updateProfile(input: UpdateProfileInput): User
   updateUsername(input: UpdateUsername): User
+  followUser(username: String): UserFollowingResponse
 }

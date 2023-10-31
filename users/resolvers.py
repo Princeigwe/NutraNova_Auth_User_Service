@@ -2,6 +2,7 @@ from utils.jwt_encode_decode import decode_access_token
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from utils.get_token_email import get_user_email
+from .models import UserFollowing
 
 User = get_user_model()
 
@@ -54,7 +55,6 @@ def resolve_onboard_user(_, info, input:dict):
     raise Exception('User does not exist')
 
 
-
 @database_sync_to_async
 def resolve_update_profile(_, info, input:dict):
   user_email = get_user_email(info)
@@ -79,7 +79,6 @@ def resolve_update_profile(_, info, input:dict):
     raise Exception('User does not exist')
 
 
-
 @database_sync_to_async
 def resolve_update_username(_, info, input:dict):
   user_email = get_user_email(info)
@@ -98,7 +97,6 @@ def resolve_update_username(_, info, input:dict):
     raise Exception("User does not exist")
 
 
-
 @database_sync_to_async
 def resolve_get_user(*_, username):
   try:
@@ -106,6 +104,45 @@ def resolve_get_user(*_, username):
     return user
   except User.DoesNotExist:
     raise Exception("User not found")
+
+
+@database_sync_to_async
+def resolve_follow_user(_, info, username):
+  user_email = get_user_email(info)
+  try:
+    user_to_follow = User.objects.get(username=username)
+    current_user = User.objects.get(email=user_email)
+    
+    user_following = UserFollowing.objects.create(user_id=current_user, following_user_id=user_to_follow)
+    user_following.save()
+    return {
+      "message": f"You are now following {user_to_follow.username}"
+    }
+  except User.DoesNotExist:
+    raise Exception("Invalid Action")
+
+
+@database_sync_to_async
+def resolve_get_my_followers():
+  pass
+
+
+@database_sync_to_async
+def resolve_get_my_followings():
+  pass
+
+
+@database_sync_to_async
+def resolve_get_user_followers():
+  pass
+
+
+@database_sync_to_async
+def resolve_get_user_followings():
+  pass
+
+
+
 
 
 def resolve_password_with_permission_check(obj, info):
