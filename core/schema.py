@@ -16,5 +16,7 @@ mutation.set_field("updateUsername", resolvers.resolve_update_username)
 
 user = ObjectType('User')
 user.set_field('password', resolvers.resolve_password_with_permission_check)
+user.set_field('medicalConditions', resolvers.resolve_medical_conditions_with_permission_check)
+
 
 schema = make_executable_schema(type_defs, query, mutation, user, convert_names_case=True)

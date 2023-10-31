@@ -113,3 +113,10 @@ def resolve_password_with_permission_check(obj, info):
   if current_user_email == obj.email:
     return obj.password
   return None
+
+
+def resolve_medical_conditions_with_permission_check(obj, info):
+  current_user_email = get_user_email(info)
+  if current_user_email == obj.email:
+    return obj.medical_conditions
+  return None
