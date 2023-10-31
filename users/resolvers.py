@@ -112,14 +112,21 @@ def resolve_follow_user(_, info, username):
   try:
     user_to_follow = User.objects.get(username=username)
     current_user = User.objects.get(email=user_email)
-    
+    UserFollowing.objects.get(user_id=current_user, following_user_id=user_to_follow)
+    return {
+      "message": f"You already follow {user_to_follow.username}"
+    }
+  
+  except User.DoesNotExist:
+    raise Exception("Invalid Action")
+  
+  except UserFollowing.DoesNotExist:
     user_following = UserFollowing.objects.create(user_id=current_user, following_user_id=user_to_follow)
     user_following.save()
     return {
       "message": f"You are now following {user_to_follow.username}"
     }
-  except User.DoesNotExist:
-    raise Exception("Invalid Action")
+
 
 
 @database_sync_to_async
