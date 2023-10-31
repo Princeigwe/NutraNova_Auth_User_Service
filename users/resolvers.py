@@ -14,7 +14,9 @@ def resolve_onboardUser(_, info, input:dict):
   # token = parts[1] # get the token
   # decoded_data = decode_access_token(token) # decode token
   # user_email = decoded_data['email']
+
   user_email = get_user_email(info)
+
 
   if input['role'] == "USER" and ('specialization' in input):
     raise Exception("Invalid action: Cannot set specialization with USER role.")
@@ -94,3 +96,13 @@ def resolve_updateUsername(_, info, input:dict):
     return user
   except User.DoesNotExist:
     raise Exception("User does not exist")
+
+
+
+@database_sync_to_async
+def resolve_getUser(*_, username):
+  try:
+    user = User.objects.all(username=username)
+    return user
+  except User.DoesNotExist:
+    raise Exception("User not found")
