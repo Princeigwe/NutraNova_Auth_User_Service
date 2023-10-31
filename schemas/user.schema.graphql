@@ -176,9 +176,9 @@ type UsersResponse{
 }
 
 type Query{
-  users: UsersResponse
-  user: UserResponse
-  onboardUser: UsersResponse
+  # users: UsersResponse
+  # user: UserResponse
+  getUser(username: String!): User
 
 }
 

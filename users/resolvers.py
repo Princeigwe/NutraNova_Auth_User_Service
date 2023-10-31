@@ -6,7 +6,7 @@ from utils.get_token_email import get_user_email
 User = get_user_model()
 
 @database_sync_to_async
-def resolve_onboardUser(_, info, input:dict):
+def resolve_onboard_user(_, info, input:dict):
 
   # request = info.context["request"] # get http request from info.context
   # authorization_header = request.headers.get("Authorization") # retrieve Authorization header to fetch value
@@ -56,7 +56,7 @@ def resolve_onboardUser(_, info, input:dict):
 
 
 @database_sync_to_async
-def resolve_updateProfile(_, info, input:dict):
+def resolve_update_profile(_, info, input:dict):
   user_email = get_user_email(info)
 
   try:
@@ -81,7 +81,7 @@ def resolve_updateProfile(_, info, input:dict):
 
 
 @database_sync_to_async
-def resolve_updateUsername(_, info, input:dict):
+def resolve_update_username(_, info, input:dict):
   user_email = get_user_email(info)
 
   desired_username = input['username']
@@ -100,9 +100,16 @@ def resolve_updateUsername(_, info, input:dict):
 
 
 @database_sync_to_async
-def resolve_getUser(*_, username):
+def resolve_get_user(*_, username):
   try:
-    user = User.objects.all(username=username)
+    user = User.objects.get(username=username)
     return user
   except User.DoesNotExist:
     raise Exception("User not found")
+
+
+def resolve_password_with_permission_check(obj, info):
+  current_user_email = get_user_email(info)
+  if current_user_email == obj.email:
+    return obj.password
+  return None

@@ -1,5 +1,5 @@
 import pytest
-from users.resolvers import resolve_updateProfile
+from users.resolvers import resolve_update_profile
 import users
 import requests
 
