@@ -190,6 +190,8 @@ type Query{
   getUser(username: String!): User
   myFollowers: [FollowerFollowing]
   myFollowing: [FollowerFollowing]
+  userFollowers(username: String!): [FollowerFollowing]
+  userFollowing(username: String!): [FollowerFollowing]
 }
 
 type Mutation{
