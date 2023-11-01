@@ -179,10 +179,16 @@ type UserFollowingResponse{
   message: String
 }
 
+type Follower{
+  username: String
+  professionalStatement: String
+}
+
 type Query{
   # users: UsersResponse
   # user: UserResponse
   getUser(username: String!): User
+  myFollowers: [Follower]
 
 }
 
