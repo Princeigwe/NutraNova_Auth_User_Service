@@ -7,6 +7,7 @@ type_defs = load_schema_from_path('schemas')
 query = QueryType()
 query.set_field("getUser", resolvers.resolve_get_user)
 query.set_field("myFollowers", resolvers.resolve_my_followers)
+query.set_field("myFollowing", resolvers.resolve_my_following)
 
 
 mutation = MutationType()
