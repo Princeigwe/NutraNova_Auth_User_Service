@@ -22,8 +22,6 @@ class CustomUser(AbstractUser):
   age                 = models.CharField(max_length=3, default=12)
   gender              = models.CharField(max_length=6, choices=choices.GENDER_CHOICES, default="MALE")
   role                = models.CharField(max_length=30, choices=choices.ROLE_CHOICES, default="USER")
-  no_followers        = models.PositiveBigIntegerField(default=0, blank=True)
-  no_followings       = models.PositiveBigIntegerField(default=0, blank=True)
   dietary_preference  = models.CharField(max_length=50, choices=choices.DIETARY_PREFERENCES_CHOICES, blank=True)
   health_goal         = models.CharField(max_length=50, choices=choices.HEALTH_GOALS_CHOICES, default="OVERALL_WELLNESS")
   allergens           = MultiSelectField(choices=choices.ALLERGEN_CHOICES, blank=True, max_length=50)
