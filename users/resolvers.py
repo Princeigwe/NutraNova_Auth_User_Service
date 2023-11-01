@@ -130,23 +130,39 @@ def resolve_follow_user(_, info, username):
 
 
 @database_sync_to_async
-def resolve_get_my_followers():
-  pass
+def resolve_my_followers(_, info):
+    user_email = get_user_email(info)
+    try:
+      follower_list = []
+      user = User.objects.prefetch_related("followers").get(email=user_email)
+      user_followers = user.followers.all() # fetch the UserFollowing objects related to the user 
+      for follower in user_followers:
+        follower_list.append(
+          {
+            "username": follower.user_id.username,
+            "professional_statement": follower.user_id.professional_statement
+          }
+        )
+      return follower_list
+    
+    except User.DoesNotExist:
+      raise Exception("User does not exist")
 
 
-@database_sync_to_async
-def resolve_get_my_followings():
-  pass
+
+# @database_sync_to_async
+# def resolve_my_followings():
+#   pass
 
 
-@database_sync_to_async
-def resolve_get_user_followers():
-  pass
+# @database_sync_to_async
+# def resolve_user_followers():
+#   pass
 
 
-@database_sync_to_async
-def resolve_get_user_followings():
-  pass
+# @database_sync_to_async
+# def resolve_user_followings():
+#   pass
 
 
 
