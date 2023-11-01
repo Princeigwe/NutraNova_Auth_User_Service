@@ -179,7 +179,7 @@ type UserFollowingResponse{
   message: String
 }
 
-type Follower{
+type FollowerFollowing{
   username: String
   professionalStatement: String
 }
@@ -188,8 +188,8 @@ type Query{
   # users: UsersResponse
   # user: UserResponse
   getUser(username: String!): User
-  myFollowers: [Follower]
-  myFollowing: [Follower]
+  myFollowers: [FollowerFollowing]
+  myFollowing: [FollowerFollowing]
 }
 
 type Mutation{

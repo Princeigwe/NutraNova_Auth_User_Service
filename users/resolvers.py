@@ -169,14 +169,51 @@ def resolve_my_following(_, info):
     raise Exception("User does not exist")
 
 
-# @database_sync_to_async
-# def resolve_user_followers():
-#   pass
 
 
-# @database_sync_to_async
-# def resolve_user_followings():
-#   pass
+
+@database_sync_to_async
+def resolve_my_follower_fake(user_email):
+    try:
+      follower_list = []
+      user = User.objects.prefetch_related("followers").get(email=user_email)
+      user_followers = user.followers.all() # fetch the UserFollowing objects related to the user 
+      for follower in user_followers:
+        follower_list.append(
+          {
+            "username": follower.user_id.username,
+            "professional_statement": follower.user_id.professional_statement
+          }
+        )
+      return follower_list
+    
+    except User.DoesNotExist:
+      raise Exception("User does not exist")
+
+
+
+
+@database_sync_to_async
+def resolver_user_followers(_, info, username=None):
+  user_email = get_user_email(info)
+  follower_list = []
+  if username:
+    try:
+      user = User.objects.prefetch_related("followers").get(username=username)
+      user_followers = user.followers.all()
+      for follower in user_followers:
+        follower_list.append(
+          {
+            "username": follower.user_id.username,
+            "professional_statement": follower.user_id.professional_statement
+          }
+        )
+      return follower_list
+    except User.DoesNotExist:
+      raise Exception("User does not exist")
+  else:
+    resolve_my_follower_fake(user_email)
+
 
 
 
