@@ -9,6 +9,7 @@ load_dotenv()
 from django.core.files .storage import FileSystemStorage
 from django.conf import settings
 from rest_framework.exceptions import ParseError
+import magic  # for reading file mimetype
 
 # Create your views here.
 
@@ -31,6 +32,10 @@ def upload_image_to_cloudinary(request):
     file = fs.save(request_file.name, request_file)
     file_url = fs.url(file)
     image_path = f"{settings.BASE_DIR}{file_url}"
+
+    image_mime_type = magic.from_file(image_path, mime=True)
+    if image_mime_type != "image/jpeg" or "image/png":
+      raise ParseError("Please upload image with extensions .png or .jpeg")
 
     print(image_path)
     print(settings.BASE_DIR)
