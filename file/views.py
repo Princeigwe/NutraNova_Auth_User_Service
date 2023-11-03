@@ -2,16 +2,10 @@ from django.shortcuts import render
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, parser_classes
-from rest_framework import status
-from utils.upload_image import upload_image, upload_and_get_image_details
-from django.http import HttpRequest
+from utils.upload_image import upload_and_get_image_details
 import os
 from dotenv import load_dotenv
 load_dotenv()
-import time
-import datetime
-import cloudinary
-import requests
 from django.core.files .storage import FileSystemStorage
 from django.conf import settings
 from rest_framework.exceptions import ParseError
