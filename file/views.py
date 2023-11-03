@@ -18,14 +18,18 @@ import magic  # for reading file mimetype
 @parser_classes([MultiPartParser])
 def upload_image_to_cloudinary(request):
   request_file = request.FILES['image'] if 'image' in request.FILES else None
-  current_directory = os.getcwd()
+  # current_directory = os.getcwd()
 
-  print(current_directory)
+  # print(current_directory)
 
   if request_file:
 
+    file_size = request_file.size
+    if file_size > 3000000: #(3MB)
+      raise ParseError("Image too large")
+
     # cloudinary does not work properly with files with gaps in it. example, default screenshots names 
-    if any( char.isspace() for char in request_file.name): # checking for gaps in the file name
+    elif any( char.isspace() for char in request_file.name): # checking for gaps in the file name
       raise ParseError("Image name cannot be parsed. Rename it or choose another")
 
     fs = FileSystemStorage()
@@ -37,13 +41,13 @@ def upload_image_to_cloudinary(request):
     if image_mime_type != "image/jpeg" or "image/png":
       raise ParseError("Please upload image with extensions .png or .jpeg")
 
-    print(image_path)
-    print(settings.BASE_DIR)
+    # print(image_path)
+    # print(settings.BASE_DIR)
 
 
     # upload = upload_image( image_path )
     upload = upload_and_get_image_details(image_path)
-    current_directory = os.getcwd()
+    # current_directory = os.getcwd()
     return Response(upload)
 
 
