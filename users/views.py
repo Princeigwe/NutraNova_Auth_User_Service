@@ -4,10 +4,9 @@ from django.core import serializers
 import random
 import string
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import json
 from utils.jwt_encode_decode import encode_access_token
-
 # Create your views here.
 
 User = get_user_model()
