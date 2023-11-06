@@ -19,6 +19,9 @@ from ariadne.asgi.handlers import GraphQLTransportWSHandler
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
+import django
+django.setup()
+
 # application = get_asgi_application()
 
 application = URLRouter([
