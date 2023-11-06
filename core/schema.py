@@ -10,6 +10,7 @@ query.set_field("myFollowers", resolvers.resolve_my_followers)
 query.set_field("myFollowing", resolvers.resolve_my_following)
 query.set_field("userFollowers", resolvers.resolver_user_followers)
 query.set_field("userFollowing", resolvers.resolve_user_following)
+query.set_field("getMyProfile", resolvers.resolve_get_my_profile)
 
 
 mutation = MutationType()

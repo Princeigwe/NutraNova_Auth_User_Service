@@ -189,6 +189,7 @@ type Query{
   # users: UsersResponse
   # user: UserResponse
   getUser(username: String!): User
+  getMyProfile: User
   myFollowers: [FollowerFollowing]
   myFollowing: [FollowerFollowing]
   userFollowers(username: String!): [FollowerFollowing]

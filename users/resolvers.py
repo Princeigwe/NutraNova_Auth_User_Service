@@ -107,6 +107,15 @@ def resolve_get_user(*_, username):
 
 
 @database_sync_to_async
+def resolve_get_my_profile(_, info):
+  user_email = get_user_email(info)
+  try:
+    current_user = User.objects.get(email=user_email)
+    return current_user
+  except User.DoesNotExist:
+    raise Exception("User not found")
+
+@database_sync_to_async
 def resolve_follow_user(_, info, username):
   user_email = get_user_email(info)
   try:
