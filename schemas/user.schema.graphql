@@ -108,6 +108,7 @@ enum HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES{
 
 
 type User{
+  image: String
   firstName: String
   lastName: String
   email: String
