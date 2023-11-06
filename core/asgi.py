@@ -25,3 +25,6 @@ application = URLRouter([
   path("graphql/", GraphQL(schema=schema, websocket_handler=GraphQLTransportWSHandler(), debug=True)),
   re_path(r"", get_asgi_application())
 ])
+
+
+app = application
