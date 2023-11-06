@@ -2,6 +2,9 @@ import subprocess
 import shlex
 import psutil
 
+import django
+django.setup()
+
 def kill_previous_running_celery_worker():
   process_name = "celery"
 
