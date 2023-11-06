@@ -14,7 +14,6 @@ class UsersConfig(AppConfig):
     # Reference to: https://stackoverflow.com/questions/28489863/why-is-run-called-twice-in-the-django-dev-server/28504072#28504072
     def ready(self) -> None:
         if os.environ.get('RUN_MAIN'):
-            # start_worker()
             if settings.ENVIRONMENT == ("production" or "staging"):
                 start_worker() # run celery worker
             
