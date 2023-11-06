@@ -29,6 +29,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1', 'localhost']
+ENVIRONMENT = os.environ.get('ENVIRONMENT')
 
 
 # Application definition
@@ -177,3 +178,6 @@ REST_FRAMEWORK = {
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+CELERY_BROKER_URL = os.environ.get("REDIS_URL")
+# CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL")
