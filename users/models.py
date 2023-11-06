@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, AbstractUser
+from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from enums import choices
@@ -11,6 +11,7 @@ from .managers import CustomUserManager
 
 
 class CustomUser(AbstractUser):
+  image         = models.URLField(max_length=500, default="https://www.gravatar.com/avatar")
   username      = models.CharField(max_length=20, unique=True)
   email         = models.EmailField(_("email address"), unique=True)
   first_name    = models.CharField(max_length=20)

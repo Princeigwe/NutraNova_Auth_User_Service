@@ -10,14 +10,14 @@ from django.core.files .storage import FileSystemStorage
 from django.conf import settings
 from rest_framework.exceptions import ParseError
 import magic  # for reading file mimetype
+from celery import shared_task
 
 mime = magic.Magic(mime=True)
 
 # Create your views here.
 
 
-@api_view(['POST'])
-@parser_classes([MultiPartParser])
+@shared_task()
 def upload_image_to_cloudinary(request):
   request_file = request.FILES['image'] if 'image' in request.FILES else None
   # current_directory = os.getcwd()
@@ -44,6 +44,6 @@ def upload_image_to_cloudinary(request):
     # print(image_path)
     # print(settings.BASE_DIR)
     upload = upload_and_get_image_details(image_path)
-    return Response(upload)
+    return upload
 
 
