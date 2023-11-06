@@ -2,12 +2,7 @@
     "builds": [
         {
             "src": "core/wsgi.py",
-            "use": "@vercel/python",
-            "config": {
-                "provision": {
-                    "apt-get": ["libmagic-dev"]
-                }
-            }
+            "use": "@vercel/python"
         }
     ],
     "routes": [

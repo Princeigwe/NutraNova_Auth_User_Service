@@ -17,9 +17,10 @@ from users.tasks import set_profile_image
 import json
 from django.core import serializers
 from django.http import HttpResponse
+import mimetypes
 
 
-mime = magic.Magic(mime=True)
+# mime = magic.Magic(mime=True)
 
 # Create your views here.
 
@@ -57,7 +58,8 @@ def upload_image_to_cloudinary(request):
     file_url = fs.url(file)
     image_path = f"{settings.BASE_DIR}{file_url}"
 
-    image_mime_type = mime.from_file(image_path)
+    # image_mime_type = mime.from_file(image_path)
+    image_mime_type, _ = mimetypes.guess_type(image_path)
     if image_mime_type not in ["image/jpeg", "image/png", "image/jpg"]:
       raise ParseError("Please upload image with extensions .png or .jpeg")
 
