@@ -64,7 +64,7 @@ def upload_image_to_cloudinary(request):
       raise ParseError("Please upload image with extensions .png or .jpeg")
 
     upload = upload_and_get_image_details(image_path)
-    user = set_profile_image(upload["secure_url"], user_email)
+    user = set_profile_image(upload["secure_url"], user_email) # "secure_url" is the cloudinary image url from the get image info response.
     serialized_user = serializers.serialize('json', [user, ])
     response = {
         "user": serialized_user
