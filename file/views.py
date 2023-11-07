@@ -6,7 +6,7 @@ from utils.upload_image import upload_and_get_image_details
 import os
 from dotenv import load_dotenv
 load_dotenv()
-from django.core.files .storage import FileSystemStorage
+from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from rest_framework.exceptions import ParseError
 from celery import shared_task
@@ -50,7 +50,9 @@ def upload_image_to_cloudinary(request):
     elif any( char.isspace() for char in request_file.name): # checking for gaps in the file name
       raise ParseError("Image name cannot be parsed. Rename it or choose another")
 
-    fs = FileSystemStorage()
+    # setting file storage location to /media/ folder in Vercel's temporary /tmp/ folder if API not running in development environment
+    default_storage = "/tmp/media/" if settings.ENVIRONMENT in ["production", "staging"] else settings.MEDIA_ROOT
+    fs = FileSystemStorage(location=default_storage)
     file = fs.save(request_file.name, request_file)
     file_url = fs.url(file)
     image_path = f"{settings.BASE_DIR}{file_url}"
