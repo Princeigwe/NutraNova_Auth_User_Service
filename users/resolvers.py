@@ -139,6 +139,19 @@ def resolve_follow_user(_, info, username):
     }
 
 
+def resolve_un_follow_user(_, info, username):
+  user_email = get_user_email(info)
+  try:
+    current_user = User.objects.get(email=user_email)
+    user_followed = User.objects.get(username=username)
+    user_following = UserFollowing.objects.get(user_id=current_user, following_user_id=user_followed)
+    user_following.delete()
+    return {
+      "message": f"You unfollowed {username}"
+    }
+  except UserFollowing.DoesNotExist:
+    return None
+
 
 # @database_sync_to_async
 def resolve_my_followers(_, info):

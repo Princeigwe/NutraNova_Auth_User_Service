@@ -18,7 +18,7 @@ mutation.set_field("onboardUser", resolvers.resolve_onboard_user)
 mutation.set_field("updateProfile", resolvers.resolve_update_profile)
 mutation.set_field("updateUsername", resolvers.resolve_update_username)
 mutation.set_field("followUser", resolvers.resolve_follow_user)
-
+mutation.set_field("unFollowUser", resolvers.resolve_un_follow_user)
 
 user = ObjectType('User')
 user.set_field('password', resolvers.resolve_password_with_permission_check)

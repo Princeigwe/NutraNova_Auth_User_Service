@@ -202,4 +202,5 @@ type Mutation{
   updateProfile(input: UpdateProfileInput): User
   updateUsername(input: UpdateUsername): User
   followUser(username: String): UserFollowingResponse
+  unFollowUser(username: String): UserFollowingResponse
 }
