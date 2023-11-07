@@ -1,11 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth import get_user_model
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from enums import choices
 from multiselectfield import MultiSelectField
 
 from .managers import CustomUserManager
+
+User = settings.AUTH_USER_MODEL
 
 # Create your models here.
 
@@ -50,8 +54,8 @@ class CustomUser(AbstractUser):
 
 
 class UserFollowing(models.Model):
-  user_id = models.ForeignKey(CustomUser, related_name="following", on_delete=models.CASCADE)
-  following_user_id = models.ForeignKey(CustomUser, related_name="followers", on_delete=models.CASCADE)
+  user_id = models.ForeignKey(User, related_name="following", on_delete=models.CASCADE)
+  following_user_id = models.ForeignKey(User, related_name="followers", on_delete=models.CASCADE)
   created = models.DateTimeField(auto_now_add=True)
 
   def __str__(self):

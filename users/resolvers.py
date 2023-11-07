@@ -6,7 +6,9 @@ from .models import UserFollowing
 
 User = get_user_model()
 
-@database_sync_to_async
+# commented out all database_sync_to_async decorator because I discovered Vercel does not support websocket connection for Daphne Channels
+
+# @database_sync_to_async
 def resolve_onboard_user(_, info, input:dict):
 
   # request = info.context["request"] # get http request from info.context
@@ -55,7 +57,7 @@ def resolve_onboard_user(_, info, input:dict):
     raise Exception('User does not exist')
 
 
-@database_sync_to_async
+# @database_sync_to_async
 def resolve_update_profile(_, info, input:dict):
   user_email = get_user_email(info)
 
@@ -79,7 +81,7 @@ def resolve_update_profile(_, info, input:dict):
     raise Exception('User does not exist')
 
 
-@database_sync_to_async
+# @database_sync_to_async
 def resolve_update_username(_, info, input:dict):
   user_email = get_user_email(info)
 
@@ -97,7 +99,7 @@ def resolve_update_username(_, info, input:dict):
     raise Exception("User does not exist")
 
 
-@database_sync_to_async
+# @database_sync_to_async
 def resolve_get_user(*_, username):
   try:
     user = User.objects.get(username=username)
@@ -106,7 +108,7 @@ def resolve_get_user(*_, username):
     raise Exception("User not found")
 
 
-@database_sync_to_async
+# @database_sync_to_async
 def resolve_get_my_profile(_, info):
   user_email = get_user_email(info)
   try:
@@ -115,7 +117,7 @@ def resolve_get_my_profile(_, info):
   except User.DoesNotExist:
     raise Exception("User not found")
 
-@database_sync_to_async
+# @database_sync_to_async
 def resolve_follow_user(_, info, username):
   user_email = get_user_email(info)
   try:
@@ -138,7 +140,7 @@ def resolve_follow_user(_, info, username):
 
 
 
-@database_sync_to_async
+# @database_sync_to_async
 def resolve_my_followers(_, info):
     user_email = get_user_email(info)
     try:
@@ -158,7 +160,7 @@ def resolve_my_followers(_, info):
       raise Exception("User does not exist")
 
 
-@database_sync_to_async
+# @database_sync_to_async
 def resolve_my_following(_, info):
   user_email = get_user_email(info)
   try:
@@ -177,7 +179,7 @@ def resolve_my_following(_, info):
     raise Exception("User does not exist")
 
 
-@database_sync_to_async
+# @database_sync_to_async
 def resolver_user_followers(_, info, username):
   follower_list = []
   try:
@@ -195,7 +197,7 @@ def resolver_user_followers(_, info, username):
     raise Exception("User does not exist")
 
 
-@database_sync_to_async
+# @database_sync_to_async
 def resolve_user_following(_, info, username):
   try:
     following_list = []
