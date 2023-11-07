@@ -54,8 +54,10 @@ def upload_image_to_cloudinary(request):
     default_storage = "/tmp/media/" if settings.ENVIRONMENT in ["production", "staging"] else settings.MEDIA_ROOT
     fs = FileSystemStorage(location=default_storage)
     file = fs.save(request_file.name, request_file)
-    file_url = fs.url(file)
-    image_path = f"{settings.BASE_DIR}{file_url}"
+    file_url = fs.url(file) # /media/<image>
+
+    # setting image path to /tmp/media/<image> if API is running on Vercel environment 
+    image_path = f"/tmp{file_url}" if settings.ENVIRONMENT in ["production", "staging"] else f"{settings.BASE_DIR}{file_url}"
 
     image_mime_type, _ = mimetypes.guess_type(image_path)
     if image_mime_type not in ["image/jpeg", "image/png", "image/jpg"]:
