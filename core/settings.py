@@ -28,13 +28,14 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1']
+ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1', 'localhost']
+ENVIRONMENT = os.environ.get('ENVIRONMENT')
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
+    # 'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,11 +46,14 @@ INSTALLED_APPS = [
     # local apps
     'users.apps.UsersConfig',
     'oidc.apps.OidcConfig',
+    'file.apps.FileConfig',
 
 
     # 3rd party apps
     "ariadne_django",
-    'multiselectfield', # to select multiple choices to be stored in database. Saving data as a list of comma-separated values
+    "multiselectfield", # to select multiple choices to be stored in database. Saving data as a list of comma-separated values
+    "cloudinary",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -80,8 +84,8 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'core.wsgi.application'
-ASGI_APPLICATION = "core.asgi.application"
+WSGI_APPLICATION = 'core.wsgi.application'
+# ASGI_APPLICATION = "core.asgi.application"
 
 
 # Database
@@ -156,3 +160,24 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "users.CustomUser"
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.FileUploadParser',
+    ],
+}
+
+
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+CELERY_BROKER_URL = os.environ.get("REDIS_URL")
+# CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL")

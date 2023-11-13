@@ -108,6 +108,7 @@ enum HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES{
 
 
 type User{
+  image: String
   firstName: String
   lastName: String
   email: String
@@ -160,6 +161,10 @@ input UpdateProfileInput{
   availability: Boolean
 }
 
+input UpdateUsername{
+  username: String!
+}
+
 
 type UserResponse{
   error: String
@@ -171,15 +176,31 @@ type UsersResponse{
   users: [User]
 }
 
-type Query{
-  users: UsersResponse
-  user: UserResponse
-  onboardUser: UsersResponse
+type UserFollowingResponse{
+  message: String
+}
 
+type FollowerFollowing{
+  username: String
+  professionalStatement: String
+}
+
+type Query{
+  # users: UsersResponse
+  # user: UserResponse
+  getUser(username: String!): User
+  getMyProfile: User
+  myFollowers: [FollowerFollowing]
+  myFollowing: [FollowerFollowing]
+  userFollowers(username: String!): [FollowerFollowing]
+  userFollowing(username: String!): [FollowerFollowing]
 }
 
 type Mutation{
   # onboardUser(input: OnboardUserInput): UserResponse
   onboardUser(input: OnboardUserInput): User
   updateProfile(input: UpdateProfileInput): User
+  updateUsername(input: UpdateUsername): User
+  followUser(username: String): UserFollowingResponse
+  unFollowUser(username: String): UserFollowingResponse
 }

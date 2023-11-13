@@ -2,18 +2,24 @@ from utils.jwt_encode_decode import decode_access_token
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from utils.get_token_email import get_user_email
+from .models import UserFollowing
 
 User = get_user_model()
 
-@database_sync_to_async
-def resolve_onboardUser(_, info, input:dict):
+# commented out all database_sync_to_async decorator because I discovered Vercel does not support websocket connection for Daphne Channels
 
-  request = info.context["request"] # get http request from info.context
-  authorization_header = request.headers.get("Authorization") # retrieve Authorization header to fetch value
-  parts = authorization_header.split(" ") # split value by the space
-  token = parts[1] # get the token
-  decoded_data = decode_access_token(token) # decode token
-  user_email = decoded_data['email']
+# @database_sync_to_async
+def resolve_onboard_user(_, info, input:dict):
+
+  # request = info.context["request"] # get http request from info.context
+  # authorization_header = request.headers.get("Authorization") # retrieve Authorization header to fetch value
+  # parts = authorization_header.split(" ") # split value by the space
+  # token = parts[1] # get the token
+  # decoded_data = decode_access_token(token) # decode token
+  # user_email = decoded_data['email']
+
+  user_email = get_user_email(info)
+
 
   if input['role'] == "USER" and ('specialization' in input):
     raise Exception("Invalid action: Cannot set specialization with USER role.")
@@ -51,9 +57,8 @@ def resolve_onboardUser(_, info, input:dict):
     raise Exception('User does not exist')
 
 
-
-@database_sync_to_async
-def resolve_updateProfile(_, info, input:dict):
+# @database_sync_to_async
+def resolve_update_profile(_, info, input:dict):
   user_email = get_user_email(info)
 
   try:
@@ -74,3 +79,166 @@ def resolve_updateProfile(_, info, input:dict):
   except User.DoesNotExist:
     print('User does not exist')
     raise Exception('User does not exist')
+
+
+# @database_sync_to_async
+def resolve_update_username(_, info, input:dict):
+  user_email = get_user_email(info)
+
+  desired_username = input['username']
+  results = User.objects.filter(username=input['username'])
+  if len(results) != 0:
+    raise Exception(f"{desired_username} is already taken")
+  
+  try:
+    user = User.objects.get(email=user_email)
+    user.username = input['username']
+    user.save()
+    return user
+  except User.DoesNotExist:
+    raise Exception("User does not exist")
+
+
+# @database_sync_to_async
+def resolve_get_user(*_, username):
+  try:
+    user = User.objects.get(username=username)
+    return user
+  except User.DoesNotExist:
+    raise Exception("User not found")
+
+
+# @database_sync_to_async
+def resolve_get_my_profile(_, info):
+  user_email = get_user_email(info)
+  try:
+    current_user = User.objects.get(email=user_email)
+    return current_user
+  except User.DoesNotExist:
+    raise Exception("User not found")
+
+# @database_sync_to_async
+def resolve_follow_user(_, info, username):
+  user_email = get_user_email(info)
+  try:
+    user_to_follow = User.objects.get(username=username)
+    current_user = User.objects.get(email=user_email)
+    UserFollowing.objects.get(user_id=current_user, following_user_id=user_to_follow)
+    return {
+      "message": f"You already follow {user_to_follow.username}"
+    }
+  
+  except User.DoesNotExist:
+    raise Exception("Invalid Action")
+  
+  except UserFollowing.DoesNotExist:
+    user_following = UserFollowing.objects.create(user_id=current_user, following_user_id=user_to_follow)
+    user_following.save()
+    return {
+      "message": f"You are now following {user_to_follow.username}"
+    }
+
+
+def resolve_un_follow_user(_, info, username):
+  user_email = get_user_email(info)
+  try:
+    current_user = User.objects.get(email=user_email)
+    user_followed = User.objects.get(username=username)
+    user_following = UserFollowing.objects.get(user_id=current_user, following_user_id=user_followed)
+    user_following.delete()
+    return {
+      "message": f"You unfollowed {username}"
+    }
+  except UserFollowing.DoesNotExist:
+    return None
+
+
+# @database_sync_to_async
+def resolve_my_followers(_, info):
+    user_email = get_user_email(info)
+    try:
+      follower_list = []
+      user = User.objects.prefetch_related("followers").get(email=user_email)
+      user_followers = user.followers.all() # fetch the UserFollowing objects related to the user 
+      for follower in user_followers:
+        follower_list.append(
+          {
+            "username": follower.user_id.username,
+            "professional_statement": follower.user_id.professional_statement
+          }
+        )
+      return follower_list
+    
+    except User.DoesNotExist:
+      raise Exception("User does not exist")
+
+
+# @database_sync_to_async
+def resolve_my_following(_, info):
+  user_email = get_user_email(info)
+  try:
+    following_list = []
+    user = User.objects.prefetch_related("following").get(email=user_email)
+    user_following = user.following.all()
+    for follow in user_following:
+      following_list.append(
+        {
+          "username": follow.following_user_id.username,
+          "professional_statement": follow.following_user_id.professional_statement
+        }
+      )
+    return following_list
+  except User.DoesNotExist:
+    raise Exception("User does not exist")
+
+
+# @database_sync_to_async
+def resolver_user_followers(_, info, username):
+  follower_list = []
+  try:
+    user = User.objects.prefetch_related("followers").get(username=username)
+    user_followers = user.followers.all()
+    for follower in user_followers:
+      follower_list.append(
+        {
+          "username": follower.user_id.username,
+          "professional_statement": follower.user_id.professional_statement
+        }
+      )
+    return follower_list
+  except User.DoesNotExist:
+    raise Exception("User does not exist")
+
+
+# @database_sync_to_async
+def resolve_user_following(_, info, username):
+  try:
+    following_list = []
+    user = User.objects.prefetch_related("following").get(username=username)
+    user_following = user.following.all()
+    for follow in user_following:
+      following_list.append(
+        {
+          "username": follow.following_user_id.username,
+          "professional_statement": follow.following_user_id.professional_statement
+        }
+      )
+    return following_list
+  except User.DoesNotExist:
+    raise Exception("User does not exist")
+
+
+
+
+def resolve_password_with_permission_check(obj, info):
+  current_user_email = get_user_email(info)
+  if current_user_email == obj.email:
+    return obj.password
+  return None
+
+
+def resolve_medical_conditions_with_permission_check(obj, info):
+  current_user_email = get_user_email(info)
+  if current_user_email == obj.email:
+    return obj.medical_conditions
+  return None

@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 import json
 from utils.jwt_encode_decode import encode_access_token
+from django.core import serializers
 
 # Create your views here.
 
@@ -53,4 +54,3 @@ def oidc_get_or_create_user(request, username, email, first_name, last_name):
         access_token = encode_access_token(payload)
         user_data["access_token"] = access_token
         return HttpResponse(json.dumps(user_data), content_type="application/json")
-
