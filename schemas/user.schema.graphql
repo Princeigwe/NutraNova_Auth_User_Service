@@ -180,9 +180,14 @@ type UserFollowingResponse{
   message: String
 }
 
-type FollowerFollowing{
+type UserFollowingFollower{
   username: String
   professionalStatement: String
+}
+
+type FollowerFollowing{
+  number: Int
+  users: [UserFollowingFollower]
 }
 
 type Query{
@@ -190,10 +195,10 @@ type Query{
   # user: UserResponse
   getUser(username: String!): User
   getMyProfile: User
-  myFollowers: [FollowerFollowing]
-  myFollowing: [FollowerFollowing]
-  userFollowers(username: String!): [FollowerFollowing]
-  userFollowing(username: String!): [FollowerFollowing]
+  myFollowers: FollowerFollowing
+  myFollowing: FollowerFollowing
+  userFollowers(username: String!): FollowerFollowing
+  userFollowing(username: String!): FollowerFollowing
 }
 
 type Mutation{

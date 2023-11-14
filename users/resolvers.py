@@ -129,7 +129,7 @@ def resolve_follow_user(_, info, username):
     }
   
   except User.DoesNotExist:
-    raise Exception("Invalid Action")
+    raise Exception("Invalid Action: User does not exist")
   
   except UserFollowing.DoesNotExist:
     user_following = UserFollowing.objects.create(user_id=current_user, following_user_id=user_to_follow)
@@ -167,7 +167,12 @@ def resolve_my_followers(_, info):
             "professional_statement": follower.user_id.professional_statement
           }
         )
-      return follower_list
+      number_of_followers = len(follower_list)
+      # return follower_list
+      return {
+        "number": number_of_followers,
+        "users": follower_list
+      }
     
     except User.DoesNotExist:
       raise Exception("User does not exist")
@@ -187,7 +192,12 @@ def resolve_my_following(_, info):
           "professional_statement": follow.following_user_id.professional_statement
         }
       )
-    return following_list
+    # return following_list
+    number_of_followings = len(following_list)
+    return {
+      "number": number_of_followings,
+      "users": following_list
+    }
   except User.DoesNotExist:
     raise Exception("User does not exist")
 
@@ -205,7 +215,13 @@ def resolver_user_followers(_, info, username):
           "professional_statement": follower.user_id.professional_statement
         }
       )
-    return follower_list
+    # return follower_list
+    number_of_followers = len(follower_list)
+    return {
+        "number": number_of_followers,
+        "users": follower_list
+    }
+  
   except User.DoesNotExist:
     raise Exception("User does not exist")
 
@@ -223,7 +239,12 @@ def resolve_user_following(_, info, username):
           "professional_statement": follow.following_user_id.professional_statement
         }
       )
-    return following_list
+    # return following_list
+    number_of_followings = len(following_list)
+    return {
+      "number": number_of_followings,
+      "users": following_list
+    }
   except User.DoesNotExist:
     raise Exception("User does not exist")
 
