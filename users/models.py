@@ -16,7 +16,7 @@ User = settings.AUTH_USER_MODEL
 
 class CustomUser(AbstractUser):
   image         = models.URLField(max_length=500, default="https://www.gravatar.com/avatar")
-  username      = models.CharField(max_length=20, unique=True)
+  username      = models.CharField(max_length=20, unique=True, db_index=True)
   email         = models.EmailField(_("email address"), unique=True)
   first_name    = models.CharField(max_length=20)
   last_name     = models.CharField(max_length=20)
