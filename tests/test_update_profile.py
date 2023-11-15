@@ -1,6 +1,4 @@
 import pytest
-from users.resolvers import resolve_update_profile
-import users
 import requests
 
 def test_upgrade_profile(mock_post, user_json_response):

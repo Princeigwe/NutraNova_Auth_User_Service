@@ -59,6 +59,10 @@ def resolve_onboard_user(_, info, input:dict):
 
 # @database_sync_to_async
 def resolve_update_profile(_, info, input:dict):
+  """
+  The function `resolve_update_profile` updates the profile of a user, checking for certain conditions
+  and saving the changes.
+  """
   user_email = get_user_email(info)
 
   try:
@@ -66,6 +70,10 @@ def resolve_update_profile(_, info, input:dict):
     if user.role == "USER" and ('specialization' in input):
       raise Exception("Invalid action: Cannot set specialization with USER role.")
 
+    # The code block is iterating over the key-value pairs in the `input` dictionary. It checks if the
+    # value is not None and if the keys `'cuisines'` and `'taste_preferences'` are present in the
+    # `input` dictionary. If both conditions are true, it sets the attribute of the `user` object with
+    # the corresponding key to the value.
     for key, value in input.items():
       if value is not None:
         if 'cuisines' in input :

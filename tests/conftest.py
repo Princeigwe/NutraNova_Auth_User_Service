@@ -4,6 +4,8 @@ import requests
 
 User = get_user_model()
 
+
+# mocking POST request of requests package
 @pytest.fixture()
 def mock_post(mocker):
   mock = mocker.Mock()
@@ -46,6 +48,27 @@ def user_json_response():
   }
 }
   return response
+
+
+@pytest.fixture()
+def my_followers_json_response():
+  response = {
+    "data": {
+      "myFollowers": {
+        "number": 1,
+        "users": [
+          {
+            "username": "thebestcook",
+            "professionalStatement": "Hello world, I'm a chef"
+          }
+        ]
+      }
+    }
+  }
+  return response
+
+
+
 
 
 @pytest.fixture()
