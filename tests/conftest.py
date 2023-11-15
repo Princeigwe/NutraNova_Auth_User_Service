@@ -68,6 +68,22 @@ def my_followers_json_response():
   return response
 
 
+@pytest.fixture()
+def my_following_json_response():
+  response = {
+    "data": {
+      "myFollowing": {
+        "number": 1,
+        "users": [
+          {
+            "username": "thebestcook",
+            "professionalStatement": "Hello world, I'm a chef"
+          }
+        ]
+      }
+    }
+  }
+  return response
 
 
 
