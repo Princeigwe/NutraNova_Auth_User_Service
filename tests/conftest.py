@@ -69,6 +69,29 @@ def my_followers_json_response():
 
 
 @pytest.fixture()
+def follow_user_response():
+  response = {
+    "data": {
+      "followUser": {
+        "message": "You are now following thebestcook"
+      }
+    }
+  }
+  return response
+
+
+@pytest.fixture()
+def un_follow_user_response():
+  response = {
+    "data": {
+      "unFollowUser": {
+        "message": "You unfollowed thebestcook"
+      }
+    }
+  }
+  return response
+
+@pytest.fixture()
 def my_following_json_response():
   response = {
     "data": {
