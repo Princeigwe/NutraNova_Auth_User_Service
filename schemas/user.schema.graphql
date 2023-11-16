@@ -1,35 +1,211 @@
-type User{
-  first_name: String!
-  last_name: String!
-  email: String!
-  username: String!
-  password: String!
+enum GENDER_CHOICES{
+  MALE
+  FEMALE
 }
 
-input CreateUserInput{
-  first_name: String!
-  last_name: String!
-  email: String! 
-  username: String!
-  password: String!
+enum ROLE_CHOICES{
+  USER
+  HEALTH_PRACTITIONER
 }
+
+enum DIETARY_PREFERENCES_CHOICES{
+  VEGETARIAN
+  VEGAN
+  PESCATARIAN
+  GLUTEN_FREE
+  DAIRY_FREE
+  LOW_CARB
+}
+
+enum HEALTH_GOALS_CHOICES{
+  WEIGHT_LOSS
+  MUSCLE_GAIN
+  HEART_HEALTH
+  LOW_CHOLESTEROL
+  BETTER_SLEEP
+  HEALTHY_AGING
+  OVERALL_WELLNESS
+}
+
+enum ALLERGEN_CHOICES {
+  MILK
+  EGG
+  PEANUT
+  SOY
+  WHEAT
+  TREE_NUTS
+  SHELLFISH
+  SESAME
+  GARLIC
+}
+
+enum ACTIVITY_LEVELS{
+  SEDENTARY
+  LIGHTLY_ACTIVE
+  MODERATELY_ACTIVE
+  VERY_ACTIVE
+  SUPER_ACTIVE
+}
+
+enum CUISINES_CHOICES{
+  ITALIAN
+  MEDITERRAENIAN
+  ASIAN
+  MEXICAN
+  MIDDLE_EASTERN
+  AMERICAN
+  FRENCH
+  INDIAN
+  AFRICAN
+}
+
+enum MEDICAL_CONDITIONS_CHOICES{
+  DIABETICS
+  HYPERTENSION
+  KIDNEY_DISEASE
+  LACTOSE_INTOLERANCE
+  FRUCTOSE_INTOLERANCE
+  OSTEOPOROSIS
+  PREGNANCY
+}
+
+enum TASTE_PREFERENCES_CHOICES{
+  SWEET
+  SAVOURY
+  SPICY
+  BITTER
+  SOUR
+  HERBACEOUS
+  UMAMI
+  GARLICKY
+  CITRUSY
+  MILD
+  AROMATIC
+}
+
+enum HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES{
+  GENERAL
+  SPORTS
+  PEDIATRIC
+  WEIGHT_LOSS
+  DIABETICS
+  HEART_HEALTH
+  GASTROENTEROLOGY
+  ONCOLOGY
+  RENAL
+  VEGAN
+  FOOD_ALLERGIES
+  GERIATRICS
+  PREGNANCY
+  POSTPARTUM
+  EATING_DISORDERS
+  MEAL_PLANNING
+  CULINARY
+  NUTRITIONAL_SUPPLEMENTS
+  PUBLIC_HEALTH
+  WEIGHT_GAIN
+}
+
+
+type User{
+  image: String
+  firstName: String
+  lastName: String
+  email: String
+  username: String
+  password: String
+  age: Int
+  gender: GENDER_CHOICES
+  role: ROLE_CHOICES
+  dietaryPreference: DIETARY_PREFERENCES_CHOICES
+  healthGoal: HEALTH_GOALS_CHOICES
+  allergens: [ALLERGEN_CHOICES]
+  activityLevel: ACTIVITY_LEVELS
+  cuisines: [CUISINES_CHOICES]
+  medicalConditions: [MEDICAL_CONDITIONS_CHOICES]
+  tastePreferences: [TASTE_PREFERENCES_CHOICES]
+  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  professionalStatement: String
+  availability: Boolean
+  isOnBoarded: Boolean
+}
+
+input OnboardUserInput{
+  age: Int!
+  gender: GENDER_CHOICES!
+  role: ROLE_CHOICES!
+  dietary_preference: DIETARY_PREFERENCES_CHOICES!
+  health_goal: HEALTH_GOALS_CHOICES!
+  allergens: [ALLERGEN_CHOICES]
+  activity_level: ACTIVITY_LEVELS!
+  cuisines: [CUISINES_CHOICES!]!
+  medical_conditions: [MEDICAL_CONDITIONS_CHOICES]
+  taste_preferences: [TASTE_PREFERENCES_CHOICES!]!
+  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  professional_statement: String
+  availability: Boolean
+}
+
+input UpdateProfileInput{
+  age: Int
+  gender: GENDER_CHOICES
+  dietary_preference: DIETARY_PREFERENCES_CHOICES
+  health_goal: HEALTH_GOALS_CHOICES
+  allergens: [ALLERGEN_CHOICES]
+  activity_level: ACTIVITY_LEVELS
+  cuisines: [CUISINES_CHOICES]
+  medical_conditions: [MEDICAL_CONDITIONS_CHOICES]
+  taste_preferences: [TASTE_PREFERENCES_CHOICES]
+  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  professional_statement: String
+  availability: Boolean
+}
+
+input UpdateUsername{
+  username: String!
+}
+
 
 type UserResponse{
-  message: String
   error: String
   user: User
 }
 
 type UsersResponse{
   message: String
-  users: [User]!
+  users: [User]
+}
+
+type UserFollowingResponse{
+  message: String
+}
+
+type UserFollowingFollower{
+  username: String
+  professionalStatement: String
+}
+
+type FollowerFollowing{
+  number: Int
+  users: [UserFollowingFollower]
 }
 
 type Query{
-  users: UsersResponse
-  user: UserResponse
+  # users: UsersResponse
+  # user: UserResponse
+  getUser(username: String!): User
+  getMyProfile: User
+  myFollowers: FollowerFollowing
+  myFollowing: FollowerFollowing
+  userFollowers(username: String!): FollowerFollowing
+  userFollowing(username: String!): FollowerFollowing
 }
 
 type Mutation{
-  createUser(input: CreateUserInput): UserResponse!
+  # onboardUser(input: OnboardUserInput): UserResponse
+  onboardUser(input: OnboardUserInput): User
+  updateProfile(input: UpdateProfileInput): User
+  updateUsername(input: UpdateUsername): User
+  followUser(username: String): UserFollowingResponse
+  unFollowUser(username: String): UserFollowingResponse
 }

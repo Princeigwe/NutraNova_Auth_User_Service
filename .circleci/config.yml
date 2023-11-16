@@ -5,6 +5,7 @@ orbs:
 
 jobs:
   
+  
 
   install-python-dependencies-and-test-application:
     executor: python/default
@@ -17,11 +18,11 @@ jobs:
       - python/install-packages:
           pip-dependency-file: requirements.txt
           pkg-manager: pip
-          args: django-pytest
-      # - run:
-      #     name: Test API
-      #     command: |
-      #       python3 -m pytest
+          args: django-pytest PyJWT click
+      - run:
+          name: Test API
+          command: |
+            python3 -m pytest -vv
   
   deploy-with-vercel-cli:
     executor: node/default
@@ -74,7 +75,7 @@ jobs:
           steps:
             - run:
                 name: Create SuperGraph Variant(Create Once with Rover CLI)
-                command: rover subgraph publish nutranova-super-graph@staging -s ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutra-nova-auth-user-service.vercel.app/graphql/  --log debug
+                command: rover subgraph publish nutranova-super-graph@staging -s ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutra-nova-auth-user-service-pf708495-gmailcom.vercel.app/graphql/ --log debug
             - run:
                 name: Schema Check
                 command: rover graph check nutranova-super-graph@staging -s ./schemas/user.schema.graphql --log debug
@@ -82,7 +83,7 @@ jobs:
               
             - run:
                 name: Publish Schema
-                command: rover subgraph publish nutranova-super-graph@staging --schema ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutra-nova-auth-user-service.vercel.app/graphql/ --log debug
+                command: rover subgraph publish nutranova-super-graph@staging --schema ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutra-nova-auth-user-service-pf708495-gmailcom.vercel.app/graphql/ --log debug
 
 
 workflows:
