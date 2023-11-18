@@ -54,11 +54,13 @@ INSTALLED_APPS = [
     "multiselectfield", # to select multiple choices to be stored in database. Saving data as a list of comma-separated values
     "cloudinary",
     "rest_framework",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -181,3 +183,5 @@ MEDIA_URL = '/media/'
 
 CELERY_BROKER_URL = os.environ.get("REDIS_URL")
 # CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL")
+
+CORS_ALLOW_ALL_ORIGINS = True

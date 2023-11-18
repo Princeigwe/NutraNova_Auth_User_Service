@@ -1,13 +1,16 @@
+"User gender options while on-boarding"
 enum GENDER_CHOICES{
   MALE
   FEMALE
 }
 
+"User on-boarding as a regular user or as a dietitian(health practitioner)"
 enum ROLE_CHOICES{
   USER
   HEALTH_PRACTITIONER
 }
 
+"Dietary preferences for the user to pick from while on-boarding"
 enum DIETARY_PREFERENCES_CHOICES{
   VEGETARIAN
   VEGAN
@@ -17,6 +20,7 @@ enum DIETARY_PREFERENCES_CHOICES{
   LOW_CARB
 }
 
+"Health goals for the user to pick from while on-boarding"
 enum HEALTH_GOALS_CHOICES{
   WEIGHT_LOSS
   MUSCLE_GAIN
@@ -27,6 +31,7 @@ enum HEALTH_GOALS_CHOICES{
   OVERALL_WELLNESS
 }
 
+"User allergen choices while on-boarding"
 enum ALLERGEN_CHOICES {
   MILK
   EGG
@@ -39,6 +44,7 @@ enum ALLERGEN_CHOICES {
   GARLIC
 }
 
+"Activity levels of the user to pick from while on-boarding"
 enum ACTIVITY_LEVELS{
   SEDENTARY
   LIGHTLY_ACTIVE
@@ -47,6 +53,7 @@ enum ACTIVITY_LEVELS{
   SUPER_ACTIVE
 }
 
+"Cuisine choices for the user to pick from while on-boarding"
 enum CUISINES_CHOICES{
   ITALIAN
   MEDITERRAENIAN
@@ -59,6 +66,7 @@ enum CUISINES_CHOICES{
   AFRICAN
 }
 
+"Medical conditions for the user to pick from while on-boarding"
 enum MEDICAL_CONDITIONS_CHOICES{
   DIABETICS
   HYPERTENSION
@@ -69,6 +77,7 @@ enum MEDICAL_CONDITIONS_CHOICES{
   PREGNANCY
 }
 
+"Taste preferences for the user to pick from while on-boarding"
 enum TASTE_PREFERENCES_CHOICES{
   SWEET
   SAVOURY
@@ -83,6 +92,7 @@ enum TASTE_PREFERENCES_CHOICES{
   AROMATIC
 }
 
+"Choices for a dietitian to pick from concerning their specialization"
 enum HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES{
   GENERAL
   SPORTS
@@ -107,6 +117,7 @@ enum HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES{
 }
 
 
+"The user schema in relation to the user data model"
 type User{
   image: String
   firstName: String
@@ -130,6 +141,7 @@ type User{
   isOnBoarded: Boolean
 }
 
+"After first OIDC authentication, user should be on-boarded to create their complete profile. This is the input data required of them."
 input OnboardUserInput{
   age: Int!
   gender: GENDER_CHOICES!
@@ -146,6 +158,7 @@ input OnboardUserInput{
   availability: Boolean
 }
 
+"The input data responsible for updating the profile of the current user"
 input UpdateProfileInput{
   age: Int
   gender: GENDER_CHOICES
@@ -161,38 +174,31 @@ input UpdateProfileInput{
   availability: Boolean
 }
 
+"Input data to update the user's username"
 input UpdateUsername{
   username: String!
 }
 
 
-type UserResponse{
-  error: String
-  user: User
-}
-
-type UsersResponse{
-  message: String
-  users: [User]
-}
-
+"After a user (un)follows another user, a message response is given"
 type UserFollowingResponse{
   message: String
 }
 
+"Schema to view user followers and following"
 type UserFollowingFollower{
   username: String
   professionalStatement: String
 }
 
+"Gives extra details on user followers and following."
 type FollowerFollowing{
   number: Int
   users: [UserFollowingFollower]
 }
 
+"The query resolvers"
 type Query{
-  # users: UsersResponse
-  # user: UserResponse
   getUser(username: String!): User
   getMyProfile: User
   myFollowers: FollowerFollowing
@@ -201,8 +207,8 @@ type Query{
   userFollowing(username: String!): FollowerFollowing
 }
 
+"The mutation resolvers"
 type Mutation{
-  # onboardUser(input: OnboardUserInput): UserResponse
   onboardUser(input: OnboardUserInput): User
   updateProfile(input: UpdateProfileInput): User
   updateUsername(input: UpdateUsername): User
