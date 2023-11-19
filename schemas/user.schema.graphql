@@ -56,7 +56,7 @@ enum ACTIVITY_LEVELS{
 "Cuisine choices for the user to pick from while on-boarding"
 enum CUISINES_CHOICES{
   ITALIAN
-  MEDITERRAENIAN
+  MEDITERRANEAN
   ASIAN
   MEXICAN
   MIDDLE_EASTERN
