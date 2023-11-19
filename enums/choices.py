@@ -49,7 +49,7 @@ ACTIVITY_LEVELS = [
 
 CUISINES_CHOICES = [
   ("ITALIAN", "Italian"),
-  ("MEDITERRAENIAN", "Mediterraenian"),
+  ("MEDITERRANEAN", "Mediterranean"),
   ("ASIAN", "Asian"),
   ("MEXICAN", "Mexican"),
   ("MIDDLE_EASTERN", "Middle Eastern"),
