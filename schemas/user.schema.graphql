@@ -66,6 +66,7 @@ enum CUISINES_CHOICES{
   AFRICAN
 }
 
+
 "Medical conditions for the user to pick from while on-boarding"
 enum MEDICAL_CONDITIONS_CHOICES{
   DIABETICS
