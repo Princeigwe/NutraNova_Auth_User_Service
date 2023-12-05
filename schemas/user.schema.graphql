@@ -56,7 +56,7 @@ enum ACTIVITY_LEVELS{
 "Cuisine choices for the user to pick from while on-boarding"
 enum CUISINES_CHOICES{
   ITALIAN
-  MEDITERRAENIAN
+  MEDITERRANEAN
   ASIAN
   MEXICAN
   MIDDLE_EASTERN
@@ -199,8 +199,6 @@ type FollowerFollowing{
 
 "The query resolvers"
 type Query{
-  # users: UsersResponse
-  # user: UserResponse
   getUser(username: String!): User
   getMyProfile: User
   myFollowers: FollowerFollowing
@@ -211,7 +209,6 @@ type Query{
 
 "The mutation resolvers"
 type Mutation{
-  # onboardUser(input: OnboardUserInput): UserResponse
   onboardUser(input: OnboardUserInput): User
   updateProfile(input: UpdateProfileInput): User
   updateUsername(input: UpdateUsername): User

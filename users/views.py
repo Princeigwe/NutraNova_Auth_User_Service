@@ -29,6 +29,17 @@ def oidc_get_or_create_user(request, username, email, first_name, last_name):
             "email": user_data["email"],
             "first_name": user_data["first_name"],
             "last_name": user_data["last_name"],
+            "age": user_data["age"],
+            "gender": user_data["gender"],
+            "role": user_data["role"],
+            "dietary_preference": user_data["dietary_preference"],
+            "taste_preferences": user_data["taste_preferences"],
+            "health_goal": user_data["health_goal"],
+            "allergens": user_data["allergens"],
+            "activity_level": user_data["activity_level"],
+            "cuisines": user_data["cuisines"],
+            "medical_conditions": user_data["medical_conditions"],
+            "is_on_boarded": user_data["is_on_boarded"],
         }
         access_token = encode_access_token(payload)
         user_data["access_token"] = access_token
@@ -50,6 +61,17 @@ def oidc_get_or_create_user(request, username, email, first_name, last_name):
             "email": user_data["email"],
             "first_name": user_data["first_name"],
             "last_name": user_data["last_name"],
+            "age": user_data["age"],
+            "gender": user_data["gender"],
+            "role": user_data["role"],
+            "dietary_preference": user_data["dietary_preference"],
+            "taste_preferences": user_data["taste_preferences"],
+            "health_goal": user_data["health_goal"],
+            "allergens": user_data["allergens"],
+            "activity_level": user_data["activity_level"],
+            "cuisines": user_data["cuisines"],
+            "medical_conditions": user_data["medical_conditions"],
+            "is_on_boarded": user_data["is_on_boarded"],
         }
         access_token = encode_access_token(payload)
         user_data["access_token"] = access_token
