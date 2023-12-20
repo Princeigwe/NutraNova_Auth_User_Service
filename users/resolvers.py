@@ -3,6 +3,7 @@ from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from utils.get_token_email import get_user_email
 from .models import UserFollowing
+from utils.kafka.produce.update_username_chef import send_updated_username
 
 User = get_user_model()
 
@@ -100,8 +101,16 @@ def resolve_update_username(_, info, input:dict):
   
   try:
     user = User.objects.get(email=user_email)
+    old_username = user.username
     user.username = input['username']
     user.save()
+
+    # send message to kafka
+    kafka_message = {
+      "old_username": old_username,
+      "new_username": user.username # updated username
+    }
+    send_updated_username(kafka_message)
     return user
   except User.DoesNotExist:
     raise Exception("User does not exist")
