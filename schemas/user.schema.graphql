@@ -186,6 +186,11 @@ type UserFollowingResponse{
   message: String
 }
 
+type UpdateUsernameResponse{
+  user: User
+  jwt: String
+}
+
 "Schema to view user followers and following"
 type UserFollowingFollower{
   username: String
@@ -212,7 +217,7 @@ type Query{
 type Mutation{
   onboardUser(input: OnboardUserInput): User
   updateProfile(input: UpdateProfileInput): User
-  updateUsername(input: UpdateUsername): User
+  updateUsername(input: UpdateUsername): UpdateUsernameResponse
   followUser(username: String): UserFollowingResponse
   unFollowUser(username: String): UserFollowingResponse
 }
