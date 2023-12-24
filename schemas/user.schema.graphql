@@ -222,3 +222,4 @@ type Mutation{
   followUser(username: String): UserFollowingResponse
   unFollowUser(username: String): UserFollowingResponse
 }
+
