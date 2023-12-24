@@ -115,7 +115,9 @@ def resolve_update_username(_, info, input:dict):
 
     send_updated_username(kafka_message)
 
-    # create new access token for user of updated username
+    # create new access token for user of updated username 
+    # in order for the user to interact properly with their
+    # created recipes in the recipes service
     payload = {
         "username": user.username,
         "email": user.email,
