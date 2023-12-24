@@ -186,6 +186,7 @@ type UserFollowingResponse{
   message: String
 }
 
+"After username is updated a new jwt is given in order for the user to interact properly with their created recipes in the recipes service"
 type UpdateUsernameResponse{
   user: User
   jwt: String
