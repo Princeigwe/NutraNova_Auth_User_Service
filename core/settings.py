@@ -24,6 +24,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 ENVIRONMENT = os.environ.get("ENVIRONMENT", default="production" )
 
+if ENVIRONMENT == 'production':
+    SECURE_BROWSER_XSS_FILTER = True # protect against cross-site scripting attacks
+    X_FRAME_OPTIONS = 'DENY' # to protect against clickjacking attacks
+    SECURE_SSL_REDIRECT = True # make all non HTTPS traffic redirect  to HTTPS
+    SECURE_HSTS_SECONDS = 3600 # [HTTP Strict Transfer Security] the time in seconds the browser should remember that this application is only accessible using HTTPS
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True # to force every subdomain to be accessible over HTTPS only
+    SECURE_HSTS_PRELOAD =  True # to ensure https connection to website, before actually visiting the website
+    SECURE_CONTENT_TYPE_NOSNIFF = True # 
+    SESSION_COOKIE_SECURE = True # to use session cookie only over HTTPS
+    CSRF_COOKIE_SECURE = True # to secure csrf cookie in HTTPS connection
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') ## to prevent redirects
+
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'django-insecure-$&vhg-f)r%92=v1ngplqdq83&x0$(qbb#299**uks+pa2cg!9l'
 
