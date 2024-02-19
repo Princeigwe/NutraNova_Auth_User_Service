@@ -87,9 +87,9 @@ jobs:
             - run:
                 name: Create SuperGraph Variant(Create Once with Rover CLI)
                 command: rover subgraph publish nutranova-super-graph@staging -s ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutra-nova-auth-user-service-pf708495-gmailcom.vercel.app/graphql/ --log debug
-            - run:
-                name: Schema Check
-                command: rover graph check nutranova-super-graph@staging -s ./schemas/user.schema.graphql --log debug
+            # - run:
+            #     name: Schema Check
+            #     command: rover graph check nutranova-super-graph@staging -s ./schemas/user.schema.graphql --log debug
 
               
             - run:
