@@ -49,16 +49,18 @@ def upload_image_to_cloudinary(request):
 
     # cloudinary does not work properly with files with gaps in it. example, default screenshots names 
     elif any( char.isspace() for char in request_file.name): # checking for gaps in the file name
-      raise ParseError("Image name cannot be parsed. Rename it or choose another")
+      # raise ParseError("Image name cannot be parsed. Rename it or choose another")
+      request_file.name = request_file.name.replace(' ', '_')
 
     # setting file storage location to /media/ folder in Vercel's temporary /tmp/ folder if API not running in development environment
-    default_storage = "/tmp/media/" if settings.ENVIRONMENT in ["production", "staging"] else settings.MEDIA_ROOT
+    # default_storage = "/tmp/media/" if settings.ENVIRONMENT in ["production", "staging"] else settings.MEDIA_ROOT
+    default_storage = settings.MEDIA_ROOT # removed vercel tmp file storage
     fs = FileSystemStorage(location=default_storage)
     file = fs.save(request_file.name, request_file)
     file_url = fs.url(file) # /media/<image>
 
     # setting image path to /tmp/media/<image> if API is running on Vercel environment 
-    image_path = f"/tmp{file_url}" if settings.ENVIRONMENT in ["production", "staging"] else f"{settings.BASE_DIR}{file_url}"
+    image_path = f"{settings.BASE_DIR}{file_url}" # removed vercel file storage
     print(f"image path: {image_path}")
 
     image_mime_type, _ = mimetypes.guess_type(image_path)
@@ -69,9 +71,4 @@ def upload_image_to_cloudinary(request):
     upload_image_thread = UploadImageThread(image_path, user_email)
     upload_image_thread.start() # run thread
 
-    os.remove(image_path)
-    if os.path.exists(image_path):
-      print('image exists')
-    else:
-        print('image does not exist')
     return Response({"message": "Profile image updated"}, status=status.HTTP_201_CREATED)

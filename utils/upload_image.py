@@ -35,4 +35,14 @@ def upload_and_get_image_details(file):
   image_public_id, extension = os.path.splitext(image_name)
   print(image_name)
   image_info = cloudinary.api.resource(image_public_id)
+
+  # removed file at this spot, because the self upload_and_get_image_details function will not be running as a demonic thread.
+  # meaning that the file which is needed for upload can be deleted from container's media folder before the function is called,
+  # thereby throwing an error 
+  os.remove(file)
+  if os.path.exists(file):
+    print('image exists')
+  else:
+    print('image does not exist')
+
   return image_info
