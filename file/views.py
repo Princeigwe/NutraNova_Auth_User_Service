@@ -58,16 +58,26 @@ def upload_image_to_cloudinary(request):
 
     # setting image path to /tmp/media/<image> if API is running on Vercel environment 
     image_path = f"/tmp{file_url}" if settings.ENVIRONMENT in ["production", "staging"] else f"{settings.BASE_DIR}{file_url}"
+    print(f"image path: {image_path}")
 
     image_mime_type, _ = mimetypes.guess_type(image_path)
     if image_mime_type not in ["image/jpeg", "image/png", "image/jpg"]:
       raise ParseError("Please upload image with extensions .png or .jpeg")
 
     upload = upload_and_get_image_details(image_path)
-    user = set_profile_image(upload["secure_url"], user_email) # "secure_url" is the cloudinary image url from the get image info response.
-    serialized_user = serializers.serialize('json', [user, ])
-    response = {
-        "user": serialized_user
-    }
-    response_json = json.dumps(response)
-    return HttpResponse(response_json, content_type='application/json')
+    # user = set_profile_image(upload["secure_url"], user_email) # "secure_url" is the cloudinary image url from the get image info response.
+    set_profile_image(upload["secure_url"], user_email) # "secure_url" is the cloudinary image url from the get image info response.
+    
+    # serialized_user = serializers.serialize('json', [user, ])
+    # response = {
+    #     "user": serialized_user
+    # }
+    # response_json = json.dumps(response)
+    # return HttpResponse(response_json, content_type='application/json')
+
+    os.remove(image_path)
+    if os.path.exists(image_path):
+      print('image exists')
+    else:
+        print('image does not exist')
+    return Response({"message": "Profile image updated"}, status=status.HTTP_201_CREATED)
