@@ -11,6 +11,7 @@ def set_profile_image(image_url, user_email):
     user = User.objects.get(email=user_email)
     user.image = image_url
     user.save()
-    return user
+    # return user
+    print("user image updated")
   except User.DoesNotExist:
     return Response({"message": "User does not exist"}, status=status.HTTP_404_NOT_FOUND)

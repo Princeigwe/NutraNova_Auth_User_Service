@@ -17,6 +17,7 @@ import json
 from django.core import serializers
 from django.http import HttpResponse
 import mimetypes
+from threads.upload_image_thread import UploadImageThread
 
 
 # Create your views here.
@@ -64,16 +65,9 @@ def upload_image_to_cloudinary(request):
     if image_mime_type not in ["image/jpeg", "image/png", "image/jpg"]:
       raise ParseError("Please upload image with extensions .png or .jpeg")
 
-    upload = upload_and_get_image_details(image_path)
-    # user = set_profile_image(upload["secure_url"], user_email) # "secure_url" is the cloudinary image url from the get image info response.
-    set_profile_image(upload["secure_url"], user_email) # "secure_url" is the cloudinary image url from the get image info response.
-    
-    # serialized_user = serializers.serialize('json', [user, ])
-    # response = {
-    #     "user": serialized_user
-    # }
-    # response_json = json.dumps(response)
-    # return HttpResponse(response_json, content_type='application/json')
+    # uploading image in background thread
+    upload_image_thread = UploadImageThread(image_path, user_email)
+    upload_image_thread.start() # run thread
 
     os.remove(image_path)
     if os.path.exists(image_path):
