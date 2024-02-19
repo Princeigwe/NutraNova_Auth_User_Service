@@ -18,6 +18,7 @@ enum DIETARY_PREFERENCES_CHOICES{
   GLUTEN_FREE
   DAIRY_FREE
   LOW_CARB
+  GENERAL
 }
 
 "Health goals for the user to pick from while on-boarding"
