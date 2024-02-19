@@ -24,34 +24,45 @@ jobs:
           command: |
             python3 -m pytest -vv
   
-  deploy-with-vercel-cli:
-    executor: node/default
+  build-and-deploy-docker-image:
+    docker:
+      - image: cimg/python:3.12.1
+        auth:
+          username: $DOCKER_USERNAME
+          password: $DOCKER_PASSWORD
     steps:
       - checkout
-      - run:
-          name: Install Vercel CLI
-          command: |
-            sudo npm install --global vercel
-      # - run:
-      #     name: Login
-      #     command: vercel login pf708495@gmail.com
-      - run:
-          name: Pull
-          command: vercel pull --environment=preview --token $VERCEL_ACCESS_TOKEN
-      # - run:
-      #     name: Link Project
-      #     command: vercel link --token $VERCEL_ACCESS_TOKEN
-      # - run:
-      #     name: Build
-      #     command: vercel build --token $VERCEL_ACCESS_TOKEN
-      # - run: 
-      #     name: Deploy
-      #     command: |
-      #       vercel deploy --prebuilt --token $VERCEL_ACCESS_TOKEN
-      - run: 
-          name: Deploy
-          command: |
-            vercel --token $VERCEL_ACCESS_TOKEN
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - when:
+          condition:
+            equal: [staging, << pipeline.git.branch >>]
+          steps:
+            - run:
+                name: Build Docker image
+                command: docker build -t $DOCKER_USERNAME/nutranova_user_service:latest .
+            - run:
+                name: Push image
+                command: |
+                  docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.io
+                  docker push $DOCKER_USERNAME/nutranova_user_service:latest
+  
+  # switching from vercel to render 
+  # deploy-with-vercel-cli:
+  #   executor: node/default
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Install Vercel CLI
+  #         command: |
+  #           sudo npm install --global vercel
+  #     - run:
+  #         name: Pull
+  #         command: vercel pull --environment=preview --token $VERCEL_ACCESS_TOKEN
+  #     - run: 
+  #         name: Deploy
+  #         command: |
+  #           vercel --token $VERCEL_ACCESS_TOKEN
   
 
   update-subgraph-schema:
@@ -90,11 +101,12 @@ workflows:
   build-and-deploy:
     jobs:
       - install-python-dependencies-and-test-application
-      - deploy-with-vercel-cli:
-          context: NutraNova
+      - build-and-deploy-docker-image:
+          context:
+            - DOCKER_AUTH
           requires:
             - install-python-dependencies-and-test-application
       - update-subgraph-schema:
           context: NutraNova
           requires:
-            - deploy-with-vercel-cli
+            - build-and-deploy-docker-image

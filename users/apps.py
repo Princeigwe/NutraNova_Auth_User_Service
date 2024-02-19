@@ -16,4 +16,3 @@ class UsersConfig(AppConfig):
         if os.environ.get('RUN_MAIN'):
             if settings.ENVIRONMENT == ("production" or "staging"):
                 start_worker() # run celery worker
-            
