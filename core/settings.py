@@ -44,7 +44,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = int(os.environ.get('DEBUG', default=0))
 
 ALLOWED_HOSTS = ['nutranova-user.onrender.com', '127.0.0.1', 'localhost']
-ENVIRONMENT = os.environ.get('ENVIRONMENT')
+# ENVIRONMENT = os.environ.get('ENVIRONMENT')
 
 
 # Application definition
