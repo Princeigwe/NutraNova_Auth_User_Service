@@ -19,6 +19,9 @@ enum DIETARY_PREFERENCES_CHOICES{
   DAIRY_FREE
   LOW_CARB
   GENERAL
+  PREBIOTIC
+  PROBIOTIC
+  HYDRATING
 }
 
 "Health goals for the user to pick from while on-boarding"
@@ -30,6 +33,17 @@ enum HEALTH_GOALS_CHOICES{
   BETTER_SLEEP
   HEALTHY_AGING
   OVERALL_WELLNESS
+  ANTI_INFLAMMATORY
+  JOINT_HEALTH
+  IMMUNE_SUPPORT
+  GUT_HEALTH
+  LOW_FAT
+  WEIGHT_MAINTENANCE
+  CARDIOVASCULAR_HEALTH
+  DIGESTIVE_HEALTH
+  BRAIN_HEALTH
+  GUT_HEALTH
+  RECOVERY
 }
 
 "User allergen choices while on-boarding"
@@ -92,6 +106,7 @@ enum TASTE_PREFERENCES_CHOICES{
   CITRUSY
   MILD
   AROMATIC
+  CREAMY
 }
 
 "Choices for a dietitian to pick from concerning their specialization"
