@@ -37,7 +37,6 @@ HEALTH_GOALS_CHOICES = [
   ("CARDIOVASCULAR_HEALTH", "cardiovascular health"),
   ("DIGESTIVE_HEALTH", "digestive health"),
   ("BRAIN_HEALTH", "brain health"),
-  ("GUT_HEALTH", "gut health"),
   ("RECOVERY", "recovery")
 ]
 
