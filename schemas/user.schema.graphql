@@ -1,35 +1,239 @@
+"User gender options while on-boarding"
+enum GENDER_CHOICES{
+  MALE
+  FEMALE
+}
+
+"User on-boarding as a regular user or as a dietitian(health practitioner)"
+enum ROLE_CHOICES{
+  USER
+  HEALTH_PRACTITIONER
+}
+
+"Dietary preferences for the user to pick from while on-boarding"
+enum DIETARY_PREFERENCES_CHOICES{
+  VEGETARIAN
+  VEGAN
+  PESCATARIAN
+  GLUTEN_FREE
+  DAIRY_FREE
+  LOW_CARB
+  GENERAL
+  PREBIOTIC
+  PROBIOTIC
+  HYDRATING
+}
+
+"Health goals for the user to pick from while on-boarding"
+enum HEALTH_GOALS_CHOICES{
+  WEIGHT_LOSS
+  MUSCLE_GAIN
+  HEART_HEALTH
+  LOW_CHOLESTEROL
+  BETTER_SLEEP
+  HEALTHY_AGING
+  OVERALL_WELLNESS
+  ANTI_INFLAMMATORY
+  JOINT_HEALTH
+  IMMUNE_SUPPORT
+  GUT_HEALTH
+  LOW_FAT
+  WEIGHT_MAINTENANCE
+  CARDIOVASCULAR_HEALTH
+  DIGESTIVE_HEALTH
+  BRAIN_HEALTH
+  RECOVERY
+}
+
+"User allergen choices while on-boarding"
+enum ALLERGEN_CHOICES {
+  MILK
+  EGG
+  PEANUT
+  SOY
+  WHEAT
+  TREE_NUTS
+  SHELLFISH
+  SESAME
+  GARLIC
+}
+
+"Activity levels of the user to pick from while on-boarding"
+enum ACTIVITY_LEVELS{
+  SEDENTARY
+  LIGHTLY_ACTIVE
+  MODERATELY_ACTIVE
+  VERY_ACTIVE
+  SUPER_ACTIVE
+}
+
+"Cuisine choices for the user to pick from while on-boarding"
+enum CUISINES_CHOICES{
+  ITALIAN
+  MEDITERRANEAN
+  ASIAN
+  MEXICAN
+  MIDDLE_EASTERN
+  AMERICAN
+  FRENCH
+  INDIAN
+  AFRICAN
+}
+
+
+"Medical conditions for the user to pick from while on-boarding"
+enum MEDICAL_CONDITIONS_CHOICES{
+  DIABETICS
+  HYPERTENSION
+  KIDNEY_DISEASE
+  LACTOSE_INTOLERANCE
+  FRUCTOSE_INTOLERANCE
+  OSTEOPOROSIS
+  PREGNANCY
+}
+
+"Taste preferences for the user to pick from while on-boarding"
+enum TASTE_PREFERENCES_CHOICES{
+  SWEET
+  SAVOURY
+  SPICY
+  BITTER
+  SOUR
+  HERBACEOUS
+  UMAMI
+  GARLICKY
+  CITRUSY
+  MILD
+  AROMATIC
+  CREAMY
+}
+
+"Choices for a dietitian to pick from concerning their specialization"
+enum HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES{
+  GENERAL
+  SPORTS
+  PEDIATRIC
+  WEIGHT_LOSS
+  DIABETICS
+  HEART_HEALTH
+  GASTROENTEROLOGY
+  ONCOLOGY
+  RENAL
+  VEGAN
+  FOOD_ALLERGIES
+  GERIATRICS
+  PREGNANCY
+  POSTPARTUM
+  EATING_DISORDERS
+  MEAL_PLANNING
+  CULINARY
+  NUTRITIONAL_SUPPLEMENTS
+  PUBLIC_HEALTH
+  WEIGHT_GAIN
+}
+
+
+"The user schema in relation to the user data model"
 type User{
-  first_name: String!
-  last_name: String!
-  email: String!
-  username: String!
-  password: String!
+  image: String
+  firstName: String
+  lastName: String
+  email: String
+  username: String
+  password: String
+  age: Int
+  gender: GENDER_CHOICES
+  role: ROLE_CHOICES
+  dietaryPreference: DIETARY_PREFERENCES_CHOICES
+  healthGoal: HEALTH_GOALS_CHOICES
+  allergens: [ALLERGEN_CHOICES]
+  activityLevel: ACTIVITY_LEVELS
+  cuisines: [CUISINES_CHOICES]
+  medicalConditions: [MEDICAL_CONDITIONS_CHOICES]
+  tastePreferences: [TASTE_PREFERENCES_CHOICES]
+  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  professionalStatement: String
+  availability: Boolean
+  isOnBoarded: Boolean
 }
 
-input CreateUserInput{
-  first_name: String!
-  last_name: String!
-  email: String! 
-  username: String!
-  password: String!
+"After first OIDC authentication, user should be on-boarded to create their complete profile. This is the input data required of them."
+input OnboardUserInput{
+  age: Int!
+  gender: GENDER_CHOICES!
+  role: ROLE_CHOICES!
+  dietary_preference: DIETARY_PREFERENCES_CHOICES!
+  health_goal: HEALTH_GOALS_CHOICES!
+  allergens: [ALLERGEN_CHOICES]
+  activity_level: ACTIVITY_LEVELS!
+  cuisines: [CUISINES_CHOICES!]!
+  medical_conditions: [MEDICAL_CONDITIONS_CHOICES]
+  taste_preferences: [TASTE_PREFERENCES_CHOICES!]!
+  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  professional_statement: String
+  availability: Boolean
 }
 
-type UserResponse{
+"The input data responsible for updating the profile of the current user"
+input UpdateProfileInput{
+  age: Int
+  gender: GENDER_CHOICES
+  dietary_preference: DIETARY_PREFERENCES_CHOICES
+  health_goal: HEALTH_GOALS_CHOICES
+  allergens: [ALLERGEN_CHOICES]
+  activity_level: ACTIVITY_LEVELS
+  cuisines: [CUISINES_CHOICES]
+  medical_conditions: [MEDICAL_CONDITIONS_CHOICES]
+  taste_preferences: [TASTE_PREFERENCES_CHOICES]
+  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  professional_statement: String
+  availability: Boolean
+}
+
+"Input data to update the user's username"
+input UpdateUsername{
+  username: String!
+}
+
+
+"After a user (un)follows another user, a message response is given"
+type UserFollowingResponse{
   message: String
-  error: String
+}
+
+"After username is updated a new jwt is given in order for the user to interact properly with their created recipes in the recipes service"
+type UpdateUsernameResponse{
   user: User
+  jwt: String
 }
 
-type UsersResponse{
-  message: String
-  users: [User]!
+"Schema to view user followers and following"
+type UserFollowingFollower{
+  username: String
+  professionalStatement: String
 }
 
+"Gives extra details on user followers and following."
+type FollowerFollowing{
+  number: Int
+  users: [UserFollowingFollower]
+}
+
+"The query resolvers"
 type Query{
-  users: UsersResponse
-  user: UserResponse
+  getUser(username: String!): User
+  getMyProfile: User
+  myFollowers: FollowerFollowing
+  myFollowing: FollowerFollowing
+  userFollowers(username: String!): FollowerFollowing
+  userFollowing(username: String!): FollowerFollowing
 }
 
+"The mutation resolvers"
 type Mutation{
-  createUser(input: CreateUserInput): UserResponse!
+  onboardUser(input: OnboardUserInput): User
+  updateProfile(input: UpdateProfileInput): User
+  updateUsername(input: UpdateUsername): UpdateUsernameResponse
+  followUser(username: String): UserFollowingResponse
+  unFollowUser(username: String): UserFollowingResponse
 }

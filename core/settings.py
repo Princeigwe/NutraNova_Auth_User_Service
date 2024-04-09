@@ -22,18 +22,35 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
+
+ENVIRONMENT = os.environ.get("ENVIRONMENT", default="production" )
+
+if ENVIRONMENT == 'production':
+    SECURE_BROWSER_XSS_FILTER = True # protect against cross-site scripting attacks
+    X_FRAME_OPTIONS = 'DENY' # to protect against clickjacking attacks
+    SECURE_SSL_REDIRECT = True # make all non HTTPS traffic redirect  to HTTPS
+    SECURE_HSTS_SECONDS = 3600 # [HTTP Strict Transfer Security] the time in seconds the browser should remember that this application is only accessible using HTTPS
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True # to force every subdomain to be accessible over HTTPS only
+    SECURE_HSTS_PRELOAD =  True # to ensure https connection to website, before actually visiting the website
+    SECURE_CONTENT_TYPE_NOSNIFF = True # 
+    SESSION_COOKIE_SECURE = True # to use session cookie only over HTTPS
+    CSRF_COOKIE_SECURE = True # to secure csrf cookie in HTTPS connection
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') ## to prevent redirects
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get('DEBUG', default=0))
 
-ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1']
+ALLOWED_HOSTS = ['nutranova-user.onrender.com', '127.0.0.1', 'localhost']
+# ENVIRONMENT = os.environ.get('ENVIRONMENT')
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    # 'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,15 +60,22 @@ INSTALLED_APPS = [
 
     # local apps
     'users.apps.UsersConfig',
+    'oidc.apps.OidcConfig',
+    'file.apps.FileConfig',
 
 
     # 3rd party apps
     "ariadne_django",
+    "multiselectfield", # to select multiple choices to be stored in database. Saving data as a list of comma-separated values
+    "cloudinary",
+    "rest_framework",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -78,6 +102,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
+# ASGI_APPLICATION = "core.asgi.application"
 
 
 # Database
@@ -90,13 +115,22 @@ DATABASES = {
     # }
 
     # connecting to remote cockroachDB database
+    # 'default': {
+    #     'ENGINE': 'django_cockroachdb',
+    #     'NAME': os.environ.get('COCKROACHDB_DATABASE_NAME'),
+    #     'USER': os.environ.get('COCKROACHDB_SQL_USER'),
+    #     'PASSWORD': os.environ.get('COCKROACHDB_SQL_PASSWORD'),
+    #     'HOST': os.environ.get('COCKROACHDB_HOST'),
+    #     'PORT': os.environ.get('COCKROACHDB_PORT'),
+    # },
+
     'default': {
-        'ENGINE': 'django_cockroachdb',
-        'NAME': os.environ.get('COCKROACHDB_DATABASE_NAME'),
-        'USER': os.environ.get('COCKROACHDB_SQL_USER'),
-        'PASSWORD': os.environ.get('COCKROACHDB_SQL_PASSWORD'),
-        'HOST': os.environ.get('COCKROACHDB_HOST'),
-        'PORT': os.environ.get('COCKROACHDB_PORT'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('AIVEN_DATABASE_NAME'),
+        'USER': os.environ.get('AIVEN_USER'),
+        'PASSWORD': os.environ.get('AIVEN_PASSWORD'),
+        'HOST': os.environ.get('AIVEN_HOST'),
+        'PORT': os.environ.get('AIVEN_PORT'),
     },
 }
 
@@ -141,3 +175,28 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = "users.CustomUser"
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.FileUploadParser',
+    ],
+}
+
+
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+CELERY_BROKER_URL = os.environ.get("REDIS_URL")
+# CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL")
+
+CORS_ALLOW_ALL_ORIGINS = True
