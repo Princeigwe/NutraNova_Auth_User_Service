@@ -10,8 +10,8 @@ jobs:
   install-python-dependencies-and-test-application:
     executor: python/default
     environment:
-      VERCEL_ORG_ID: $VERCEL_ORG_ID
-      VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
+      # VERCEL_ORG_ID: $VERCEL_ORG_ID
+      # VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
       APOLLO_KEY: $APOLLO_KEY
     steps:
       - checkout
