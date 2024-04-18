@@ -57,12 +57,10 @@ def oidc_callback(request):
         access_token = token_response_data['access_token']
         user_info_url = f'https://{auth0_domain}/userinfo'
 
-        params = {
-            "access_token": access_token
-        }
+        headers = {'Authorization': f'Bearer {access_token}'}
 
         try:
-            response = requests.get(user_info_url, params=params)
+            response = requests.get(user_info_url, headers=headers)
             user_info_response_data = response.json()
             username = user_info_response_data['nickname']
             email = user_info_response_data['email']
