@@ -221,19 +221,30 @@ type FollowerFollowing{
 
 "The query resolvers"
 type Query{
+  "get a user's profile by their username"
   getUser(username: String!): User
+  "get the profile of the current logged in user"
   getMyProfile: User
+  "get the followers of the current logged in user"
   myFollowers: FollowerFollowing
+  "get the list of users that the current user is following"
   myFollowing: FollowerFollowing
+  "get the followers of a user by their username"
   userFollowers(username: String!): FollowerFollowing
+  "get the list of users that the current user us following by email"
   userFollowing(username: String!): FollowerFollowing
 }
 
 "The mutation resolvers"
 type Mutation{
+  "setup profile after registration of current user"
   onboardUser(input: OnboardUserInput): User
+  "update profile of current user"
   updateProfile(input: UpdateProfileInput): User
+  "update username of current user"
   updateUsername(input: UpdateUsername): UpdateUsernameResponse
+  "follow a user by their username"
   followUser(username: String): UserFollowingResponse
+  "unfollow a user by their username"
   unFollowUser(username: String): UserFollowingResponse
 }
