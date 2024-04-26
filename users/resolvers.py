@@ -5,6 +5,8 @@ from utils.get_token_email import get_user_email
 from .models import UserFollowing
 from utils.kafka.produce.update_username_chef import send_updated_username
 from utils.jwt_encode_decode import encode_access_token
+from utils.update_access_token import update_access_token
+from .views import oidc_get_or_create_user
 
 
 User = get_user_model()
@@ -30,7 +32,8 @@ def resolve_onboard_user(_, info, input:dict):
   try:
     user = User.objects.get(email=user_email)
     if user.is_on_boarded:
-      raise Exception( "User is already on-boarded. Update profile to make changes." )
+      updated_access_token = update_access_token(user)
+      raise Exception( f"User is already on-boarded, update profile to make changes. New access token: {updated_access_token} " )
     user.age = input['age']
     user.gender = input['gender']
     user.role = input['role']
@@ -54,7 +57,13 @@ def resolve_onboard_user(_, info, input:dict):
       user.availability = input['availability']
     
     user.save()
-    return user
+    jwt = updated_access_token = update_access_token(user)
+    # return user
+    return {
+      "user": user, 
+      "jwt": jwt
+    }
+
   except User.DoesNotExist:
     print('User does not exist')
     raise Exception('User does not exist')

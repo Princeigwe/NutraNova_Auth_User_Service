@@ -201,8 +201,8 @@ type UserFollowingResponse{
   message: String
 }
 
-"After username is updated a new jwt is given in order for the user to interact properly with their created recipes in the recipes service"
-type UpdateUsernameResponse{
+"After user data is updated a new jwt is given in order for the user to interact properly with other microservices"
+type UpdateUserResponse{
   user: User
   jwt: String
 }
@@ -238,11 +238,14 @@ type Query{
 "The mutation resolvers"
 type Mutation{
   "setup profile after registration of current user"
-  onboardUser(input: OnboardUserInput): User
+  onboardUser(input: OnboardUserInput): UpdateUserResponse
   "update profile of current user"
+
+  #todo: update profile-update response to the commented one
   updateProfile(input: UpdateProfileInput): User
+  # updateProfile(input: UpdateProfileInput): UpdateUserResponse
   "update username of current user"
-  updateUsername(input: UpdateUsername): UpdateUsernameResponse
+  updateUsername(input: UpdateUsername): UpdateUserResponse
   "follow a user by their username"
   followUser(username: String): UserFollowingResponse
   "unfollow a user by their username"
