@@ -42,6 +42,8 @@ class CustomUser(AbstractUser):
   professional_statement  = models.TextField(max_length=200, blank=True, null=True)
   availability            = models.BooleanField(blank=True, null=True)
   is_on_boarded           = models.BooleanField(default=False)
+  vote_strength           = models.IntegerField(default=1)
+  is_verified             = models.BooleanField(default=False)
   
   USERNAME_FIELD = 'username'
   REQUIRED_FIELDS = []
