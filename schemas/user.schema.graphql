@@ -155,6 +155,8 @@ type User{
   professionalStatement: String
   availability: Boolean
   isOnBoarded: Boolean
+  voteStrength: Int
+  isVerified: Boolean
 }
 
 "After first OIDC authentication, user should be on-boarded to create their complete profile. This is the input data required of them."
@@ -241,9 +243,8 @@ type Mutation{
   onboardUser(input: OnboardUserInput): UpdateUserResponse
   "update profile of current user"
 
-  #todo: update profile-update response to the commented one
-  updateProfile(input: UpdateProfileInput): User
-  # updateProfile(input: UpdateProfileInput): UpdateUserResponse
+  # updateProfile(input: UpdateProfileInput): User
+  updateProfile(input: UpdateProfileInput): UpdateUserResponse
   "update username of current user"
   updateUsername(input: UpdateUsername): UpdateUserResponse
   "follow a user by their username"
