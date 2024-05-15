@@ -40,6 +40,8 @@ def oidc_get_or_create_user(request, username, email, first_name, last_name):
             "cuisines": user_data["cuisines"],
             "medical_conditions": user_data["medical_conditions"],
             "is_on_boarded": user_data["is_on_boarded"],
+            "vote_strength": user_data["vote_strength"],
+            "is_verified": user_data["is_verified"]
         }
         access_token = encode_access_token(payload)
         user_data["access_token"] = access_token
