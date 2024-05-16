@@ -19,6 +19,8 @@ def update_access_token(user):
     "cuisines": user.cuisines,
     "medical_conditions": user.medical_conditions,
     "is_on_boarded": user.is_on_boarded,
+    "vote_strength": user.vote_strength,
+    "is_verified": user.is_verified
     }
   jwt = encode_access_token(payload)
   return jwt
