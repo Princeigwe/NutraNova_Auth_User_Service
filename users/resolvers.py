@@ -3,7 +3,7 @@ from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from utils.get_token_email import get_user_email
 from .models import UserFollowing
-from utils.kafka.produce.update_username_chef import send_updated_username
+from utils.kafka.produce.user_data_update import send_user_data_update
 from utils.jwt_encode_decode import encode_access_token
 from utils.update_access_token import update_access_token
 from .views import oidc_get_or_create_user
@@ -117,12 +117,34 @@ def resolve_update_username(_, info, input:dict):
     user.save()
 
     # send message to kafka
+    print("user data: ", user.__dict__)
     kafka_message = {
       "old_username": old_username,
-      "new_username": user.username # updated username
+      "new_username": user.username, # updated username
+
+      # general data needed for all microservices
+      # "first_name": user['first_name'],
+      # "last_name": user['last_name'],
+
+      # specific data needed for the user foreign key in recipe model in Recipe microservice
+      # "vote_strength": user['vote_strength'],
+      # "is_verified": user['is_verified']
+
+      # specific data needed for the user preferences in Chef model in Recommendations microservice
+      # "preferences": {
+      #   "dietary_preference": user["dietary_preference"],
+      #   "health_goal":        user["health_goal"],
+      #   "allergens":          user["allergens"],
+      #   "activity_level":     user["activity_level"],
+      #   "cuisines":           user["cuisines"],
+      #   "medical_conditions": user["medical_conditions"],
+      #   "taste_preferences":  user["taste_preferences"]
+      # }
+
     }
 
-    send_updated_username(kafka_message)
+    # send_updated_username(kafka_message)
+    send_user_data_update(kafka_message)
 
     # create new access token for user of updated username 
     # in order for the user to interact properly with their

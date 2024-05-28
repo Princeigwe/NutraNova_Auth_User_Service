@@ -24,13 +24,15 @@ producer = KafkaProducer(bootstrap_servers=producer_config['bootstrap_servers'],
                         api_version=(2, 0, 0)
 )
 
-topic = os.environ.get('UPSTASH_KAFKA_CHEF_USERNAME_TOPIC')
+# topic = os.environ.get('UPSTASH_KAFKA_CHEF_USERNAME_TOPIC')
+topic = os.environ.get('UPSTASH_KAFKA_USER_DATA_UPDATE_TOPIC')
 
 if type(topic) == bytes:
   topic = topic.decode('utf-8')
 
-def send_updated_username(message: dict):
-  '''the sent message will be used to update the chef data model in the recipe service'''
+
+def send_user_data_update(message: dict):
+  '''the sent message will be used to update the chef data model in Recipe and Recommendations microservices'''
   future = producer.send(topic, message)
 
   try:
