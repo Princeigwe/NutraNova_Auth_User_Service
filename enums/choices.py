@@ -9,6 +9,7 @@ ROLE_CHOICES = [
 ]
 
 DIETARY_PREFERENCES_CHOICES = [
+  ("GENERAL", 'general'),
   ("VEGETARIAN", 'vegetarian'),
   ("VEGAN", "vegan"),
   ("PESCATARIAN", "pescatarian"),

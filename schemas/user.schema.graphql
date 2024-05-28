@@ -178,6 +178,8 @@ input OnboardUserInput{
 
 "The input data responsible for updating the profile of the current user"
 input UpdateProfileInput{
+  first_name: String
+  last_name: String
   age: Int
   gender: GENDER_CHOICES
   dietary_preference: DIETARY_PREFERENCES_CHOICES
