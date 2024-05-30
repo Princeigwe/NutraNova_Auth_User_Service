@@ -1,5 +1,6 @@
 
 function create(user, callback) {
+  // Auth0 automatically checks for existing user before creating a new user with this script
   
   const { Pool } = require('pg');
   const bcrypt = require('bcrypt');
