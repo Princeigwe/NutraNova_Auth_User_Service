@@ -4,7 +4,7 @@ function loginByEmail(email, callback) {
 
   const { Client } = require('pg');
 
-  const conString = 'postgres://avnadmin:AVNS_agDmoS-GaLqBm8gWKfo@nutra-nova-nutra-nova.aivencloud.com:17884/defaultdb?sslmode=require';
+  const conString = process.env.AIVEN_DATABASE_URI;
 
   const client = new Client({
     connectionString: conString

@@ -8,7 +8,7 @@ function create(user, callback) {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED=0;
   
   const pool = new Pool({
-    connectionString: 'postgres://avnadmin:AVNS_agDmoS-GaLqBm8gWKfo@nutra-nova-nutra-nova.aivencloud.com:17884/defaultdb?sslmode=require',
+    connectionString: process.env.AIVEN_DATABASE_URI,
     ssl: {
       rejectUnauthorized: false
     }
