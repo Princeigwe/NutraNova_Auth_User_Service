@@ -16,7 +16,7 @@ function create(user, callback) {
 
   const is_superuser = false;
   const is_staff = false;
-  const is_active = false;
+  const is_active = true;
   const date_joined = new Date();
   const image = "https://www.gravatar.com/avatar";
   const first_name = "new";
