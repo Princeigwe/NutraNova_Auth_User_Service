@@ -73,7 +73,7 @@ def oidc_callback(request):
               user = oidc_get_or_create_user(request, username, email, first_name, last_name)
               return user
             
-            # authentication was done with oidc social login
+            # authentication was done with oidc google social login
             else:
               username = user_info_response_data['nickname']
               email = user_info_response_data['email']
