@@ -86,7 +86,9 @@ jobs:
           steps:
             - run:
                 name: Create SuperGraph Variant(Create Once with Rover CLI)
-                command: rover subgraph publish nutranova-super-graph@staging -s ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutranova-user.onrender.com/graphql/ --log debug
+                # command: rover subgraph publish nutranova-super-graph@staging -s ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutranova-user.onrender.com/graphql/ --log debug
+                command: rover subgraph publish nutranova@staging -s ./schemas/user.schema.graphql --name nutranova-user --routing-url https://nutranova-user.onrender.com/graphql/ --log debug
+
             # - run:
             #     name: Schema Check
             #     command: rover graph check nutranova-super-graph@staging -s ./schemas/user.schema.graphql --log debug
@@ -94,7 +96,9 @@ jobs:
               
             - run:
                 name: Publish Schema
-                command: rover subgraph publish nutranova-super-graph@staging --schema ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutranova-user.onrender.com/graphql/ --log debug
+                # command: rover subgraph publish nutranova-super-graph@staging --schema ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutranova-user.onrender.com/graphql/ --log debug
+                command: rover subgraph publish nutranova@staging --schema ./schemas/user.schema.graphql --name nutranova-user --routing-url https://nutranova-user.onrender.com/graphql/ --log debug
+
 
       # deploying to production environment
       - when:
@@ -103,7 +107,8 @@ jobs:
           steps:
             - run:
                 name: Create SuperGraph Variant(Create Once with Rover CLI)
-                command: rover subgraph publish nutranova-super-graph@prod -s ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutranova-user.onrender.com/graphql/ --log debug
+                # command: rover subgraph publish nutranova-super-graph@prod -s ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutranova-user.onrender.com/graphql/ --log debug
+                command: rover subgraph publish nutranova@prod -s ./schemas/user.schema.graphql --name nutranova-user --routing-url https://nutranova-user.onrender.com/graphql/ --log debug
             # - run:
             #     name: Schema Check
             #     command: rover graph check nutranova-super-graph@staging -s ./schemas/user.schema.graphql --log debug
@@ -111,7 +116,7 @@ jobs:
               
             - run:
                 name: Publish Schema
-                command: rover subgraph publish nutranova-super-graph@prod --schema ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutranova-user.onrender.com/graphql/ --log debug
+                command: rover subgraph publish nutranova@prod --schema ./schemas/user.schema.graphql --name nutranova-user --routing-url https://nutranova-user.onrender.com/graphql/ --log debug
 
 
 workflows:
