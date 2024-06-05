@@ -37,7 +37,8 @@ class CustomUser(AbstractUser):
 
 
   # field for dietician/health practitioners
-  specialization          = models.CharField(max_length=50, choices=choices.HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES, blank=True, null=True)
+  # specialization          = models.CharField(max_length=50, choices=choices.HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES, blank=True, null=True)
+  specialization          = MultiSelectField(max_length=50, choices=choices.HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES, blank=True, null=True)
 
   professional_statement  = models.TextField(max_length=200, blank=True, null=True)
   availability            = models.BooleanField(blank=True, null=True)

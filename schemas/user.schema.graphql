@@ -151,7 +151,7 @@ type User{
   cuisines: [CUISINES_CHOICES]
   medicalConditions: [MEDICAL_CONDITIONS_CHOICES]
   tastePreferences: [TASTE_PREFERENCES_CHOICES]
-  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  specialization: [HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES]
   professionalStatement: String
   availability: Boolean
   isOnBoarded: Boolean
@@ -171,7 +171,7 @@ input OnboardUserInput{
   cuisines: [CUISINES_CHOICES!]!
   medical_conditions: [MEDICAL_CONDITIONS_CHOICES]
   taste_preferences: [TASTE_PREFERENCES_CHOICES!]!
-  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  specialization: [HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES]
   professional_statement: String
   availability: Boolean
 }
@@ -189,7 +189,7 @@ input UpdateProfileInput{
   cuisines: [CUISINES_CHOICES]
   medical_conditions: [MEDICAL_CONDITIONS_CHOICES]
   taste_preferences: [TASTE_PREFERENCES_CHOICES]
-  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  specialization: [HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES]
   professional_statement: String
   availability: Boolean
 }

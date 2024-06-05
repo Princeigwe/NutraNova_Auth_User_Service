@@ -18,6 +18,9 @@ def update_access_token(user):
     "activity_level": user.activity_level,
     "cuisines": user.cuisines,
     "medical_conditions": user.medical_conditions,
+    "specialization": user.specialization,
+    "professional_statement": user.professional_statement,
+    "availability": user.availability,
     "is_on_boarded": user.is_on_boarded,
     "vote_strength": user.vote_strength,
     "is_verified": user.is_verified
