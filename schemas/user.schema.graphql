@@ -145,13 +145,13 @@ type User{
   gender: GENDER_CHOICES
   role: ROLE_CHOICES
   dietaryPreference: DIETARY_PREFERENCES_CHOICES
-  healthGoal: HEALTH_GOALS_CHOICES
+  healthGoal: [HEALTH_GOALS_CHOICES]
   allergens: [ALLERGEN_CHOICES]
   activityLevel: ACTIVITY_LEVELS
   cuisines: [CUISINES_CHOICES]
   medicalConditions: [MEDICAL_CONDITIONS_CHOICES]
   tastePreferences: [TASTE_PREFERENCES_CHOICES]
-  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  specialization: [HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES]
   professionalStatement: String
   availability: Boolean
   isOnBoarded: Boolean
@@ -165,13 +165,13 @@ input OnboardUserInput{
   gender: GENDER_CHOICES!
   role: ROLE_CHOICES!
   dietary_preference: DIETARY_PREFERENCES_CHOICES!
-  health_goal: HEALTH_GOALS_CHOICES!
+  health_goal: [HEALTH_GOALS_CHOICES!]!
   allergens: [ALLERGEN_CHOICES]
   activity_level: ACTIVITY_LEVELS!
   cuisines: [CUISINES_CHOICES!]!
   medical_conditions: [MEDICAL_CONDITIONS_CHOICES]
   taste_preferences: [TASTE_PREFERENCES_CHOICES!]!
-  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  specialization: [HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES]
   professional_statement: String
   availability: Boolean
 }
@@ -183,13 +183,13 @@ input UpdateProfileInput{
   age: Int
   gender: GENDER_CHOICES
   dietary_preference: DIETARY_PREFERENCES_CHOICES
-  health_goal: HEALTH_GOALS_CHOICES
+  health_goal: [HEALTH_GOALS_CHOICES]
   allergens: [ALLERGEN_CHOICES]
   activity_level: ACTIVITY_LEVELS
   cuisines: [CUISINES_CHOICES]
   medical_conditions: [MEDICAL_CONDITIONS_CHOICES]
   taste_preferences: [TASTE_PREFERENCES_CHOICES]
-  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  specialization: [HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES]
   professional_statement: String
   availability: Boolean
 }

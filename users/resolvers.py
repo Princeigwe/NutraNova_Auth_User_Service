@@ -49,6 +49,11 @@ def resolve_onboard_user(_, info, input:dict):
       user.allergens = input['allergens']
     if 'medical_conditions' in input:
       user.medical_conditions = input['medical_conditions']
+
+    # if user is onboarding as a regular user, they cannot input specializations meant for health experts
+    if (input['role'] == 'USER') and ('specialization' in input):
+      raise Exception("Specialization of health experts cannot be used on individual user")
+
     if 'specialization' in input:
       user.specialization = input['specialization'] 
     if 'professional_statement' in input:
@@ -82,14 +87,18 @@ def resolve_update_profile(_, info, input:dict):
     if user.role == "USER" and ('specialization' in input):
       raise Exception("Invalid action: Cannot set specialization with USER role.")
     
-    user.first_name =         input['first_name'] if 'first_name' in input else user.first_name
-    user.last_name =          input['last_name'] if 'last_name' in input else user.last_name
-    user.age =                input['age'] if 'age' in input else user.age
-    user.dietary_preference = input['dietary_preference'] if 'dietary_preference' in input else user.dietary_preference
-    user.health_goal =        input['health_goal'] if 'health_goal' in input else user.health_goal
-    user.activity_level =     input['activity_level'] if 'activity_level' in input else user.activity_level
-    user.cuisines =           input['cuisines'] if 'cuisines' in input else user.cuisines
-    user.taste_preferences =  input['taste_preferences'] if 'taste_preferences' in input else user.taste_preferences
+    user.first_name             = input['first_name'] if 'first_name' in input else user.first_name
+    user.last_name              = input['last_name'] if 'last_name' in input else user.last_name
+    user.age                    = input['age'] if 'age' in input else user.age
+    user.dietary_preference     = input['dietary_preference'] if 'dietary_preference' in input else user.dietary_preference
+    user.health_goal            = input['health_goal'] if 'health_goal' in input else user.health_goal
+    user.activity_level         = input['activity_level'] if 'activity_level' in input else user.activity_level
+    user.cuisines               = input['cuisines'] if 'cuisines' in input else user.cuisines
+    user.taste_preferences      = input['taste_preferences'] if 'taste_preferences' in input else user.taste_preferences
+
+    user.specialization         = input['specialization'] if 'specialization' in input else user.specialization
+    user.professional_statement = input['professional_statement'] if 'professional_statement' in input else user.professional_statement
+    user.availability           = input['availability'] if 'availability' in input else user.availability
     
     user.save()
     jwt = update_access_token(user)
