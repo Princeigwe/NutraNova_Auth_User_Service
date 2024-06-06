@@ -145,7 +145,7 @@ type User{
   gender: GENDER_CHOICES
   role: ROLE_CHOICES
   dietaryPreference: DIETARY_PREFERENCES_CHOICES
-  healthGoal: HEALTH_GOALS_CHOICES
+  healthGoal: [HEALTH_GOALS_CHOICES]
   allergens: [ALLERGEN_CHOICES]
   activityLevel: ACTIVITY_LEVELS
   cuisines: [CUISINES_CHOICES]
@@ -165,7 +165,7 @@ input OnboardUserInput{
   gender: GENDER_CHOICES!
   role: ROLE_CHOICES!
   dietary_preference: DIETARY_PREFERENCES_CHOICES!
-  health_goal: HEALTH_GOALS_CHOICES!
+  health_goal: [HEALTH_GOALS_CHOICES!]!
   allergens: [ALLERGEN_CHOICES]
   activity_level: ACTIVITY_LEVELS!
   cuisines: [CUISINES_CHOICES!]!
@@ -183,7 +183,7 @@ input UpdateProfileInput{
   age: Int
   gender: GENDER_CHOICES
   dietary_preference: DIETARY_PREFERENCES_CHOICES
-  health_goal: HEALTH_GOALS_CHOICES
+  health_goal: [HEALTH_GOALS_CHOICES]
   allergens: [ALLERGEN_CHOICES]
   activity_level: ACTIVITY_LEVELS
   cuisines: [CUISINES_CHOICES]
