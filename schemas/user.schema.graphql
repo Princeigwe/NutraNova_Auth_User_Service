@@ -2,6 +2,7 @@
 enum GENDER_CHOICES{
   MALE
   FEMALE
+  PREFER_NOT_TO_SAY
 }
 
 "User on-boarding as a regular user or as a dietitian(health practitioner)"
@@ -141,7 +142,8 @@ type User{
   email: String
   username: String
   password: String
-  age: Int
+  dob: String
+  telephone: String
   gender: GENDER_CHOICES
   role: ROLE_CHOICES
   dietaryPreference: DIETARY_PREFERENCES_CHOICES
@@ -161,8 +163,9 @@ type User{
 
 "After first OIDC authentication, user should be on-boarded to create their complete profile. This is the input data required of them."
 input OnboardUserInput{
-  age: Int!
   gender: GENDER_CHOICES!
+  dob: String!
+  telephone: String!
   role: ROLE_CHOICES!
   dietary_preference: DIETARY_PREFERENCES_CHOICES!
   health_goal: [HEALTH_GOALS_CHOICES!]!
@@ -180,8 +183,9 @@ input OnboardUserInput{
 input UpdateProfileInput{
   first_name: String
   last_name: String
-  age: Int
   gender: GENDER_CHOICES
+  dob: String
+  telephone: String
   dietary_preference: DIETARY_PREFERENCES_CHOICES
   health_goal: [HEALTH_GOALS_CHOICES]
   allergens: [ALLERGEN_CHOICES]

@@ -1,6 +1,7 @@
 GENDER_CHOICES = [
     ("MALE", "male"),
-    ("FEMALE", "female")
+    ("FEMALE", "female"),
+    ("PREFER_NOT_TO_SAY", "prefer_not_to_say")
 ]
 
 ROLE_CHOICES = [
