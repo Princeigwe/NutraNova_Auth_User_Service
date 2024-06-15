@@ -34,7 +34,8 @@ def resolve_onboard_user(_, info, input:dict):
     if user.is_on_boarded:
       updated_access_token = update_access_token(user)
       raise Exception( f"User is already on-boarded, update profile to make changes. New access token: {updated_access_token} " )
-    user.age = input['age']
+    user.dob = input['dob']
+    user.telephone = input['telephone']
     user.gender = input['gender']
     user.role = input['role']
     user.dietary_preference = input['dietary_preference']
@@ -89,7 +90,8 @@ def resolve_update_profile(_, info, input:dict):
     
     user.first_name             = input['first_name'] if 'first_name' in input else user.first_name
     user.last_name              = input['last_name'] if 'last_name' in input else user.last_name
-    user.age                    = input['age'] if 'age' in input else user.age
+    user.dob                    = input['dob'] if 'dob' in input else user.dob
+    user.telephone                    = input['telephone'] if 'telephone' in input else user.telephone
     user.dietary_preference     = input['dietary_preference'] if 'dietary_preference' in input else user.dietary_preference
     user.health_goal            = input['health_goal'] if 'health_goal' in input else user.health_goal
     user.activity_level         = input['activity_level'] if 'activity_level' in input else user.activity_level
