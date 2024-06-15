@@ -145,6 +145,9 @@ def resolve_update_username(_, info, input:dict):
   user_email = get_user_email(info)
 
   desired_username = input['username']
+  trimmed_desired_username = desired_username.strip()
+  if (" " in trimmed_desired_username) or ("@" in trimmed_desired_username):
+    raise Exception("Spaced characters and @ not allowed in username. Please try again.")
   results = User.objects.filter(username=input['username'])
   if len(results) != 0:
     raise Exception(f"{desired_username} is already taken")
@@ -152,7 +155,8 @@ def resolve_update_username(_, info, input:dict):
   try:
     user = User.objects.get(email=user_email)
     old_username = user.username
-    user.username = input['username']
+    # user.username = input['username']
+    user.username = trimmed_desired_username
     user.save()
 
     # send message to kafka
@@ -173,7 +177,7 @@ def resolve_update_username(_, info, input:dict):
         "email": user.email,
         "first_name": user.first_name,
         "last_name": user.last_name,
-        "age": user.age,
+        "dob": str(user.dob),
         "gender": user.gender,
         "role": user.role,
         "dietary_preference": user.dietary_preference,
