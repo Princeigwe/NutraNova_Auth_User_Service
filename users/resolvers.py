@@ -3,7 +3,7 @@ from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from utils.get_token_email import get_user_email
 from .models import UserFollowing
-from utils.kafka.produce.update_username_chef import send_updated_username
+from utils.kafka.produce.user_data_update import send_user_data_update
 from utils.jwt_encode_decode import encode_access_token
 from utils.update_access_token import update_access_token
 from .views import oidc_get_or_create_user
@@ -34,7 +34,8 @@ def resolve_onboard_user(_, info, input:dict):
     if user.is_on_boarded:
       updated_access_token = update_access_token(user)
       raise Exception( f"User is already on-boarded, update profile to make changes. New access token: {updated_access_token} " )
-    user.age = input['age']
+    user.dob = input['dob']
+    user.telephone = input['telephone']
     user.gender = input['gender']
     user.role = input['role']
     user.dietary_preference = input['dietary_preference']
@@ -49,6 +50,11 @@ def resolve_onboard_user(_, info, input:dict):
       user.allergens = input['allergens']
     if 'medical_conditions' in input:
       user.medical_conditions = input['medical_conditions']
+
+    # if user is onboarding as a regular user, they cannot input specializations meant for health experts
+    if (input['role'] == 'USER') and ('specialization' in input):
+      raise Exception("Specialization of health experts cannot be used on individual user")
+
     if 'specialization' in input:
       user.specialization = input['specialization'] 
     if 'professional_statement' in input:
@@ -57,7 +63,7 @@ def resolve_onboard_user(_, info, input:dict):
       user.availability = input['availability']
     
     user.save()
-    jwt = updated_access_token = update_access_token(user)
+    jwt = update_access_token(user)
     # return user
     return {
       "user": user, 
@@ -81,21 +87,54 @@ def resolve_update_profile(_, info, input:dict):
     user = User.objects.get(email=user_email)
     if user.role == "USER" and ('specialization' in input):
       raise Exception("Invalid action: Cannot set specialization with USER role.")
+    
+    user.first_name             = input['first_name'] if 'first_name' in input else user.first_name
+    user.last_name              = input['last_name'] if 'last_name' in input else user.last_name
+    user.dob                    = input['dob'] if 'dob' in input else user.dob
+    user.telephone                    = input['telephone'] if 'telephone' in input else user.telephone
+    user.dietary_preference     = input['dietary_preference'] if 'dietary_preference' in input else user.dietary_preference
+    user.health_goal            = input['health_goal'] if 'health_goal' in input else user.health_goal
+    user.activity_level         = input['activity_level'] if 'activity_level' in input else user.activity_level
+    user.cuisines               = input['cuisines'] if 'cuisines' in input else user.cuisines
+    user.taste_preferences      = input['taste_preferences'] if 'taste_preferences' in input else user.taste_preferences
 
-    # The code block is iterating over the key-value pairs in the `input` dictionary. It checks if the
-    # value is not None and if the keys `'cuisines'` and `'taste_preferences'` are present in the
-    # `input` dictionary. If both conditions are true, it sets the attribute of the `user` object with
-    # the corresponding key to the value.
-    for key, value in input.items():
-      if value is not None:
-        if 'cuisines' in input :
-          if len(input['cuisines']) != 0:
-            if 'taste_preferences' in input:
-              if len(input['taste_preferences']) != 0:
-                setattr(user, key, value)
+    user.specialization         = input['specialization'] if 'specialization' in input else user.specialization
+    user.professional_statement = input['professional_statement'] if 'professional_statement' in input else user.professional_statement
+    user.availability           = input['availability'] if 'availability' in input else user.availability
     
     user.save()
-    return user
+    jwt = update_access_token(user)
+
+    # send message to kafka
+    kafka_message = {
+      # general data needed for all microservices
+      "username": user.username,
+      "first_name": user.first_name,
+      "last_name": user.last_name,
+
+      # specific data needed for the user foreign key in recipe model in Recipe microservice
+      "vote_strength": user.vote_strength,
+      "is_verified": user.is_verified,
+
+      # specific data needed for the user preferences in Chef model in Recommendations microservice
+      "preferences": {
+        "dietary_preference": user.dietary_preference,
+        "health_goal":        user.health_goal,
+        "allergens":          user.allergens,
+        "activity_level":     user.activity_level,
+        "cuisines":           user.cuisines,
+        "medical_conditions": user.medical_conditions,
+        "taste_preferences":  user.taste_preferences
+      }
+    }
+
+    # send_updated_username(kafka_message)
+    send_user_data_update(kafka_message)
+
+    return {
+      "user": user, 
+      "jwt": jwt
+    }
   except User.DoesNotExist:
     print('User does not exist')
     raise Exception('User does not exist')
@@ -106,6 +145,9 @@ def resolve_update_username(_, info, input:dict):
   user_email = get_user_email(info)
 
   desired_username = input['username']
+  trimmed_desired_username = desired_username.strip()
+  if (" " in trimmed_desired_username) or ("@" in trimmed_desired_username):
+    raise Exception("Spaced characters and @ not allowed in username. Please try again.")
   results = User.objects.filter(username=input['username'])
   if len(results) != 0:
     raise Exception(f"{desired_username} is already taken")
@@ -113,16 +155,19 @@ def resolve_update_username(_, info, input:dict):
   try:
     user = User.objects.get(email=user_email)
     old_username = user.username
-    user.username = input['username']
+    # user.username = input['username']
+    user.username = trimmed_desired_username
     user.save()
 
     # send message to kafka
     kafka_message = {
       "old_username": old_username,
-      "new_username": user.username # updated username
+      "new_username": user.username, # updated username
+
     }
 
-    send_updated_username(kafka_message)
+    # send_updated_username(kafka_message)
+    send_user_data_update(kafka_message)
 
     # create new access token for user of updated username 
     # in order for the user to interact properly with their
@@ -132,7 +177,7 @@ def resolve_update_username(_, info, input:dict):
         "email": user.email,
         "first_name": user.first_name,
         "last_name": user.last_name,
-        "age": user.age,
+        "dob": str(user.dob),
         "gender": user.gender,
         "role": user.role,
         "dietary_preference": user.dietary_preference,

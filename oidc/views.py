@@ -62,12 +62,32 @@ def oidc_callback(request):
         try:
             response = requests.get(user_info_url, headers=headers)
             user_info_response_data = response.json()
-            username = user_info_response_data['nickname']
-            email = user_info_response_data['email']
-            first_name = user_info_response_data['given_name']
-            last_name = user_info_response_data['family_name']
-            user = oidc_get_or_create_user(request, username, email, first_name, last_name)
-            return user
+
+            # if authentication was done by email and password on Auth0,
+            # the user_info_response_data will have the the keys(sub, nickname, name, picture, updated_at, email)
+            if "sub" in user_info_response_data:
+              username = user_info_response_data['nickname']
+              email = user_info_response_data['email']
+              first_name = "new" # the name that was defined in Auth0 database create user action script in Username-Password Authentication
+              last_name = "user" # the name that was defined in Auth0 database create user action script in Username-Password Authentication
+              user = oidc_get_or_create_user(request, username, email, first_name, last_name)
+              return user
+            
+            # authentication was done with oidc google social login
+            else:
+              username = user_info_response_data['nickname']
+              email = user_info_response_data['email']
+              first_name = user_info_response_data['given_name']
+              last_name = user_info_response_data['family_name']
+              user = oidc_get_or_create_user(request, username, email, first_name, last_name)
+              return user
+            # print("checking email/password auth response: ", user_info_response_data)
+            # username = user_info_response_data['nickname']
+            # email = user_info_response_data['email']
+            # first_name = user_info_response_data['given_name']
+            # last_name = user_info_response_data['family_name']
+            # user = oidc_get_or_create_user(request, username, email, first_name, last_name)
+            # return user
 
         except requests.exceptions.ConnectionError as e:
             print(f'Connection Error: {e}')

@@ -1,6 +1,7 @@
 GENDER_CHOICES = [
     ("MALE", "male"),
-    ("FEMALE", "female")
+    ("FEMALE", "female"),
+    ("PREFER_NOT_TO_SAY", "prefer_not_to_say")
 ]
 
 ROLE_CHOICES = [
@@ -9,6 +10,7 @@ ROLE_CHOICES = [
 ]
 
 DIETARY_PREFERENCES_CHOICES = [
+  ("GENERAL", 'general'),
   ("VEGETARIAN", 'vegetarian'),
   ("VEGAN", "vegan"),
   ("PESCATARIAN", "pescatarian"),
