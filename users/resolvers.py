@@ -113,6 +113,7 @@ def resolve_update_profile(_, info, input:dict):
       "last_name": user.last_name,
 
       # specific data needed for the user foreign key in recipe model in Recipe microservice
+      # user_image is supposed is supposed to be among, but that is handled in the microservice REST API endpoint for uploading image
       "vote_strength": user.vote_strength,
       "is_verified": user.is_verified,
 
