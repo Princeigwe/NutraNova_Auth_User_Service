@@ -1,0 +1,31 @@
+openapi: 3.0.3
+info:
+  title: Profile-Photo-Upload Endpoint
+  version: 1.0.0
+  description: This is just a documentation on the endpoint for uploading user profile
+    picture, as every other operation is done with GraphQL
+paths:
+  /file/upload/:
+    post:
+      operationId: file_upload_create
+      description: |-
+        The function `upload_image_to_cloudinary` uploads an image file to Cloudinary, validates the file
+        size and name, checks the file type, and updates the user's profile image with the uploaded image.
+      tags:
+      - file
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid

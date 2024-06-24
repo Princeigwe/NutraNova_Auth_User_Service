@@ -70,6 +70,8 @@ INSTALLED_APPS = [
     "cloudinary",
     "rest_framework",
     "corsheaders",
+    "drf_spectacular",
+    "drf_spectacular_sidecar",
 ]
 
 MIDDLEWARE = [
@@ -189,6 +191,7 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser',
         'rest_framework.parsers.FileUploadParser',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 
@@ -200,3 +203,16 @@ CELERY_BROKER_URL = os.environ.get("REDIS_URL")
 # CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL")
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Profile-Photo-Upload Endpoint',
+    'DESCRIPTION': 'This is just a documentation on the endpoint for uploading user profile picture, as every other operation is done with GraphQL',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    
+    # OTHER SETTINGS
+
+    'SWAGGER_UI_DIST': 'SIDECAR',  # shorthand to use the sidecar instead
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR',
+}
