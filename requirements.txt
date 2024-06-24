@@ -68,7 +68,6 @@ MarkupSafe==2.1.5
 more-itertools==10.2.0
 mozilla-django-oidc==3.0.0
 msgpack==1.0.8
-numpy==1.26.4
 oic==1.6.1
 packaging==23.2
 Pillow==10.1.0
