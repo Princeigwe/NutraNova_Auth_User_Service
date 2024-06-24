@@ -18,11 +18,14 @@ from django.core import serializers
 from django.http import HttpResponse
 import mimetypes
 from threads.upload_image_thread import UploadImageThread
+from drf_spectacular.utils import extend_schema
+from .serializers import CloudinaryUploadSerializer
 
 
 # Create your views here.
 
 
+@extend_schema(request=CloudinaryUploadSerializer)
 @api_view(['POST'])
 @parser_classes([MultiPartParser])
 def upload_image_to_cloudinary(request):
