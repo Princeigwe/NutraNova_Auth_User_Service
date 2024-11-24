@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from utils.get_token_email import get_user_email
 from .models import UserFollowing
 from utils.kafka.produce.user_data_update import send_user_data_update
+from utils.rabbitmq.publishers.user_data_update import send_user_data_update as rabbitmq_update
 from utils.jwt_encode_decode import encode_access_token
 from utils.update_access_token import update_access_token
 from .views import oidc_get_or_create_user
@@ -161,14 +162,15 @@ def resolve_update_username(_, info, input:dict):
     user.save()
 
     # send message to kafka
-    kafka_message = {
+    event_message = {
       "old_username": old_username,
       "new_username": user.username, # updated username
 
     }
 
     # send_updated_username(kafka_message)
-    send_user_data_update(kafka_message)
+    # send_user_data_update(event_message)
+    rabbitmq_update(event_message)
 
     # create new access token for user of updated username 
     # in order for the user to interact properly with their
