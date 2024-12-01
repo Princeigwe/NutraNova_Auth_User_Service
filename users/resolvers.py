@@ -3,7 +3,6 @@ from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from utils.get_token_email import get_user_email
 from .models import UserFollowing
-from utils.kafka.produce.user_data_update import send_user_data_update
 from utils.rabbitmq.publishers.user_data_update import send_user_data_update as rabbitmq_update
 from utils.jwt_encode_decode import encode_access_token
 from utils.update_access_token import update_access_token
@@ -107,7 +106,7 @@ def resolve_update_profile(_, info, input:dict):
     jwt = update_access_token(user)
 
     # send message to kafka
-    kafka_message = {
+    event_message = {
       # general data needed for all microservices
       "username": user.username,
       "first_name": user.first_name,
@@ -130,8 +129,8 @@ def resolve_update_profile(_, info, input:dict):
       }
     }
 
-    # send_updated_username(kafka_message)
-    send_user_data_update(kafka_message)
+    # publish updated user message to rabbitmq
+    rabbitmq_update(event_message)
 
     return {
       "user": user, 
@@ -168,8 +167,7 @@ def resolve_update_username(_, info, input:dict):
 
     }
 
-    # send_updated_username(kafka_message)
-    # send_user_data_update(event_message)
+    # publish updated user message to rabbitmq
     rabbitmq_update(event_message)
 
     # create new access token for user of updated username 
