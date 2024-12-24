@@ -3,13 +3,15 @@ from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from utils.get_token_email import get_user_email
 from .models import UserFollowing
-from utils.rabbitmq.publishers.user_data_update import send_user_data_update as rabbitmq_update
+from utils.rabbitmq.publishers.user_data_update import send_user_data_update
 from utils.jwt_encode_decode import encode_access_token
 from utils.update_access_token import update_access_token
 from .views import oidc_get_or_create_user
+import os
 
 
 User = get_user_model()
+rabbitmq_message_type = os.environ.get('CLOUDAMQP_USER_DATA_UPDATE_QUEUE')
 
 # commented out all database_sync_to_async decorator because I discovered Vercel does not support websocket connection for Daphne Channels
 
@@ -108,6 +110,7 @@ def resolve_update_profile(_, info, input:dict):
     # send message to kafka
     event_message = {
       # general data needed for all microservices
+      "type": rabbitmq_message_type, # adding 'type' key to the message fixes the issue a consumer throws when is consumes different messages to work with
       "username": user.username,
       "first_name": user.first_name,
       "last_name": user.last_name,
@@ -130,7 +133,7 @@ def resolve_update_profile(_, info, input:dict):
     }
 
     # publish updated user message to rabbitmq
-    rabbitmq_update(event_message)
+    send_user_data_update(event_message)
 
     return {
       "user": user, 
@@ -162,13 +165,13 @@ def resolve_update_username(_, info, input:dict):
 
     # send message to kafka
     event_message = {
+      "type": rabbitmq_message_type,
       "old_username": old_username,
       "new_username": user.username, # updated username
-
     }
 
     # publish updated user message to rabbitmq
-    rabbitmq_update(event_message)
+    send_user_data_update(event_message)
 
     # create new access token for user of updated username 
     # in order for the user to interact properly with their
