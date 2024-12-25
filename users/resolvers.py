@@ -11,7 +11,7 @@ import os
 
 
 User = get_user_model()
-rabbitmq_message_type = os.environ.get('CLOUDAMQP_USER_DATA_UPDATE_QUEUE')
+rabbitmq_message_type = os.environ.get('CHEF_DATA_UPDATE_MESSAGE_TYPE')
 
 # commented out all database_sync_to_async decorator because I discovered Vercel does not support websocket connection for Daphne Channels
 
