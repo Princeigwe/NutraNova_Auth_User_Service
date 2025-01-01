@@ -8,6 +8,6 @@ stream_name=os.environ.get('RABBITMQ_STREAM')
 def send_user_data_update(message: dict):
   try:
     channel.basic_publish(exchange='', routing_key=stream_name, body=json.dumps(message))
-    print ("cloudamqp: Message sent to consumer")
+    print ("[RabbitMQ]: Message sent to stream")
   except AMQPError as e:
     logging.exception(e)
