@@ -1,6 +1,4 @@
 import pika, os
-from pika.exceptions import AMQPError
-import json
 import ssl
 
 # i was having an issue with an SSLEOFerror. 
