@@ -116,16 +116,6 @@ DATABASES = {
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
 
-    # connecting to remote cockroachDB database
-    # 'default': {
-    #     'ENGINE': 'django_cockroachdb',
-    #     'NAME': os.environ.get('COCKROACHDB_DATABASE_NAME'),
-    #     'USER': os.environ.get('COCKROACHDB_SQL_USER'),
-    #     'PASSWORD': os.environ.get('COCKROACHDB_SQL_PASSWORD'),
-    #     'HOST': os.environ.get('COCKROACHDB_HOST'),
-    #     'PORT': os.environ.get('COCKROACHDB_PORT'),
-    # },
-
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get('AIVEN_DATABASE_NAME') if ENVIRONMENT == 'production' else os.environ.get('DEV_USERS_DB_NAME'),

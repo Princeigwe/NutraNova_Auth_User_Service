@@ -63,7 +63,6 @@ def oidc_get_or_create_user(request, username, email, first_name, last_name):
             "email": user_data["email"],
             "first_name": user_data["first_name"],
             "last_name": user_data["last_name"],
-            "age": user_data["age"],
             "gender": user_data["gender"],
             "role": user_data["role"],
             "dietary_preference": user_data["dietary_preference"],
