@@ -128,11 +128,11 @@ DATABASES = {
 
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('AIVEN_DATABASE_NAME'),
-        'USER': os.environ.get('AIVEN_USER'),
-        'PASSWORD': os.environ.get('AIVEN_PASSWORD'),
-        'HOST': os.environ.get('AIVEN_HOST'),
-        'PORT': os.environ.get('AIVEN_PORT'),
+        'NAME': os.environ.get('AIVEN_DATABASE_NAME', 'DEV_USERS_DB_NAME'),
+        'USER': os.environ.get('AIVEN_USER', 'DEV_USERS_DB_USERNAME'),
+        'PASSWORD': os.environ.get('AIVEN_PASSWORD', 'DEV_USERS_DB_PASSWORD'),
+        'HOST': os.environ.get('AIVEN_HOST', 'DEV_USERS_DB_HOST'),
+        'PORT': os.environ.get('AIVEN_PORT', 'DEV_USERS_DB_PORT'),
     },
 }
 
