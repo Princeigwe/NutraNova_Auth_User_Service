@@ -176,24 +176,7 @@ def resolve_update_username(_, info, input:dict):
     # create new access token for user of updated username 
     # in order for the user to interact properly with their
     # created recipes in the recipes service
-    payload = {
-        "username": user.username,
-        "email": user.email,
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-        "dob": str(user.dob),
-        "gender": user.gender,
-        "role": user.role,
-        "dietary_preference": user.dietary_preference,
-        "taste_preferences": user.taste_preferences,
-        "health_goal": user.health_goal,
-        "allergens": user.allergens,
-        "activity_level": user.activity_level,
-        "cuisines": user.cuisines,
-        "medical_conditions": user.medical_conditions,
-        "is_on_boarded": user.is_on_boarded,
-    }
-    jwt = encode_access_token(payload)
+    jwt = update_access_token(user)
     return {
       "user": user, 
       "jwt": jwt
