@@ -90,8 +90,9 @@ def create_superuser(email: str, username: str, password: str):
         superuser.save()
         return superuser
 
-def authenticate_supersuser(email: str, password: str):
-    superuser = authenticate(email, password)
+
+def authenticate_superuser(username: str, password: str):
+    superuser = authenticate(username=username, password=password)
     if superuser is not None:
         payload = {
             "email": superuser.email,

@@ -6,7 +6,7 @@ from .models import UserFollowing
 from utils.rabbitmq.publishers.user_data_update import send_user_data_update
 from utils.jwt_encode_decode import encode_access_token
 from utils.update_access_token import update_access_token
-from .views import oidc_get_or_create_user, create_superuser
+from .views import oidc_get_or_create_user, create_superuser, authenticate_superuser
 import os
 
 
@@ -25,6 +25,12 @@ def resolve_create_superuser(*_, input:dict):
   password = input['password']
   superuser = create_superuser(email=email, username=username, password=password)
   return superuser
+
+def resolve_authenticate_superuser(*_, input:dict):
+  username = input['username']
+  password = input['password']
+  authenticated_superuser = authenticate_superuser(username=username, password=password)
+  return authenticated_superuser
 
 # @database_sync_to_async
 def resolve_onboard_user(_, info, input:dict):

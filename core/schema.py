@@ -15,6 +15,7 @@ query.set_field("getMyProfile", resolvers.resolve_get_my_profile)
 
 mutation = MutationType()
 mutation.set_field("createSuperUser", resolvers.resolve_create_superuser)
+mutation.set_field("authenticateSuperUser", resolvers.resolve_authenticate_superuser)
 mutation.set_field("onboardUser", resolvers.resolve_onboard_user)
 mutation.set_field("updateProfile", resolvers.resolve_update_profile)
 mutation.set_field("updateUsername", resolvers.resolve_update_username)

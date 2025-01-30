@@ -168,6 +168,12 @@ input CreateSuperUserInput{
   password: String
 }
 
+"Login a NutraNova superuser"
+input LoginSuperUserInput{
+  username: String
+  password: String
+}
+
 "After first OIDC authentication, user should be on-boarded to create their complete profile. This is the input data required of them."
 input OnboardUserInput{
   gender: GENDER_CHOICES!
@@ -211,10 +217,16 @@ input UpdateUsername{
 }
 
 "After a super user has been created, this will be the response"
-type SuperUserResponse{
+type SuperUserRegistrationResponse{
   email: String
   username: String
   is_superuser: Boolean
+}
+
+type SuperUserLoginResponse{
+  superuser: SuperUserRegistrationResponse
+  jwt: String
+  message: String
 }
 
 "After a user (un)follows another user, a message response is given"
@@ -259,7 +271,11 @@ type Query{
 "The mutation resolvers"
 type Mutation{
   "create superuser"
-  createSuperUser(input: CreateSuperUserInput): SuperUserResponse
+  createSuperUser(input: CreateSuperUserInput): SuperUserRegistrationResponse
+
+  "authenticate superuser"
+  authenticateSuperUser(input: LoginSuperUserInput): SuperUserLoginResponse
+
   "setup profile after registration of current user"
   onboardUser(input: OnboardUserInput): UpdateUserResponse
   "update profile of current user"
