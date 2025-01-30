@@ -6,7 +6,7 @@ from .models import UserFollowing
 from utils.rabbitmq.publishers.user_data_update import send_user_data_update
 from utils.jwt_encode_decode import encode_access_token
 from utils.update_access_token import update_access_token
-from .views import oidc_get_or_create_user
+from .views import oidc_get_or_create_user, create_superuser
 import os
 
 
@@ -14,6 +14,17 @@ User = get_user_model()
 rabbitmq_message_type = os.environ.get('CHEF_DATA_UPDATE_MESSAGE_TYPE')
 
 # commented out all database_sync_to_async decorator because I discovered Vercel does not support websocket connection for Daphne Channels
+
+
+#** this resolver function is meant for superuser registration,
+#** which will be more efficient in interacting with other microservices,
+#** rather than creating a superuser for each microservice
+def resolve_create_superuser(*_, input:dict):
+  email = input['email']
+  username = input['username']
+  password = input['password']
+  superuser = create_superuser(email=email, username=username, password=password)
+  return superuser
 
 # @database_sync_to_async
 def resolve_onboard_user(_, info, input:dict):

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from django.core import serializers
 import random
 import string
@@ -77,3 +77,33 @@ def oidc_get_or_create_user(request, username, email, first_name, last_name):
         access_token = encode_access_token(payload)
         user_data["access_token"] = access_token
         return HttpResponse(json.dumps(user_data), content_type="application/json")
+
+
+#* superusers will authenticate directly on the API without an OpenID provider. This will be done with GraphQL
+def create_superuser(email: str, username: str, password: str):
+    try:
+        superuser = User.objects.get(email=email)
+        return superuser
+    except User.DoesNotExist:
+        superuser = User.objects.create_superuser(email=email, username=username)
+        superuser.set_password(password)
+        superuser.save()
+        return superuser
+
+def authenticate_supersuser(email: str, password: str):
+    superuser = authenticate(email, password)
+    if superuser is not None:
+        payload = {
+            "email": superuser.email,
+            "username": superuser.username,
+            "is_superuser": superuser.is_superuser
+        }
+        access_token = encode_access_token(payload)
+        return {
+            "superuser": superuser,
+            "jwt": access_token
+        }
+    else:
+        return{
+            "message": "Invalid credentials."
+        }
