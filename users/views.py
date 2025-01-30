@@ -97,7 +97,8 @@ def authenticate_superuser(username: str, password: str):
         payload = {
             "email": superuser.email,
             "username": superuser.username,
-            "is_superuser": superuser.is_superuser
+            "is_superuser": superuser.is_superuser,
+            "is_on_boarded": superuser.is_on_boarded,
         }
         access_token = encode_access_token(payload)
         return {
