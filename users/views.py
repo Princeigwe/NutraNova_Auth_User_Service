@@ -25,6 +25,7 @@ def oidc_get_or_create_user(request, username, email, first_name, last_name):
         serialized_data = serializers.serialize("json", [user])
         user_data = json.loads(serialized_data)[0]['fields']  # Parse JSON and access 'fields'
         payload = {
+            "image": user_data["image"],
             "username": user_data["username"],
             "email": user_data["email"],
             "first_name": user_data["first_name"],
