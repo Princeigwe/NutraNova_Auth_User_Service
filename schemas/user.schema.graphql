@@ -229,10 +229,7 @@ type SuperUserLoginResponse{
   message: String
 }
 
-"After a user (un)follows another user, a message response is given"
-type UserFollowingResponse{
-  message: String
-}
+
 
 "After user data is updated a new jwt is given in order for the user to interact properly with other microservices"
 type UpdateUserResponse{
@@ -285,7 +282,7 @@ type Mutation{
   "update username of current user"
   updateUsername(input: UpdateUsername): UpdateUserResponse
   "follow a user by their username"
-  followUser(username: String): UserFollowingResponse
+  followUser(username: String): String
   "unfollow a user by their username"
-  unFollowUser(username: String): UserFollowingResponse
+  unFollowUser(username: String): String
 }

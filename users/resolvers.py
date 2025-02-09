@@ -237,9 +237,7 @@ def resolve_follow_user(_, info, username):
   except UserFollowing.DoesNotExist:
     user_following = UserFollowing.objects.create(user_id=current_user, following_user_id=user_to_follow)
     user_following.save()
-    return {
-      "message": f"You are now following {user_to_follow.username}"
-    }
+    return  f"You are now following {user_to_follow.username}"
 
 
 def resolve_un_follow_user(_, info, username):
@@ -249,9 +247,7 @@ def resolve_un_follow_user(_, info, username):
     user_followed = User.objects.get(username=username)
     user_following = UserFollowing.objects.get(user_id=current_user, following_user_id=user_followed)
     user_following.delete()
-    return {
-      "message": f"You unfollowed {username}"
-    }
+    return f"You unfollowed {username}"
   except UserFollowing.DoesNotExist:
     return None
 
