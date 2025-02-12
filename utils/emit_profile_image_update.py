@@ -5,7 +5,6 @@ from utils.rabbitmq.publishers.user_data_update import send_user_data_update
 import os
 
 
-## todo: work on this feature for rabbitmq
 User = get_user_model()
 rabbitmq_message_type = os.environ.get('CHEF_DATA_UPDATE_MESSAGE_TYPE')
 
