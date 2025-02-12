@@ -124,7 +124,7 @@ def resolve_update_profile(_, info, input:dict):
     user.save()
     jwt = update_access_token(user)
 
-    # send message to kafka
+    # send message to RabbitMQ
     event_message = {
       # general data needed for all microservices
       "type": rabbitmq_message_type, # adding 'type' key to the message fixes the issue a consumer throws when is consumes different messages to work with
@@ -180,7 +180,7 @@ def resolve_update_username(_, info, input:dict):
     user.username = trimmed_desired_username
     user.save()
 
-    # send message to kafka
+    # send message to RabbitMQ
     event_message = {
       "type": rabbitmq_message_type,
       "old_username": old_username,
