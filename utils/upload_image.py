@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 
-from celery import shared_task
 
 import cloudinary
 import cloudinary.uploader
@@ -18,7 +17,6 @@ cloudinary.config(
 
 
 # uploading image 
-# @shared_task
 def upload_image(file):
   cloudinary.uploader.upload(file, use_filename = True, unique_filename = False)
   srcURL = cloudinary.CloudinaryImage(file).build_url()
@@ -26,7 +24,6 @@ def upload_image(file):
 
 
 # fetching image info 
-@shared_task
 def upload_and_get_image_details(file):
   built_image = upload_image(file)
   image_name = os.path.basename(built_image)

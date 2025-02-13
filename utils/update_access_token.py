@@ -6,6 +6,7 @@ def update_access_token(user):
   """this is used to update the access token for a user for every change in profile data"""
   print(user.dob)
   payload = {
+    "image": user.image,
     "username": user.username,
     "email": user.email,
     "first_name": user.first_name,
