@@ -43,7 +43,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get('DEBUG', default=0))
 
-ALLOWED_HOSTS = ['nutranova-user.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['nutranova-user.onrender.com', '127.0.0.1', 'localhost', 'users-service'] # users-service refers to the docker container in the compose file
 # ENVIRONMENT = os.environ.get('ENVIRONMENT')
 
 
@@ -116,23 +116,13 @@ DATABASES = {
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
 
-    # connecting to remote cockroachDB database
-    # 'default': {
-    #     'ENGINE': 'django_cockroachdb',
-    #     'NAME': os.environ.get('COCKROACHDB_DATABASE_NAME'),
-    #     'USER': os.environ.get('COCKROACHDB_SQL_USER'),
-    #     'PASSWORD': os.environ.get('COCKROACHDB_SQL_PASSWORD'),
-    #     'HOST': os.environ.get('COCKROACHDB_HOST'),
-    #     'PORT': os.environ.get('COCKROACHDB_PORT'),
-    # },
-
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('AIVEN_DATABASE_NAME'),
-        'USER': os.environ.get('AIVEN_USER'),
-        'PASSWORD': os.environ.get('AIVEN_PASSWORD'),
-        'HOST': os.environ.get('AIVEN_HOST'),
-        'PORT': os.environ.get('AIVEN_PORT'),
+        'NAME': os.environ.get('AIVEN_DATABASE_NAME') if ENVIRONMENT == 'production' else os.environ.get('DEV_USERS_DB_NAME'),
+        'USER': os.environ.get('AIVEN_USER') if ENVIRONMENT == 'production' else os.environ.get('DEV_USERS_DB_USERNAME'),
+        'PASSWORD': os.environ.get('AIVEN_PASSWORD') if ENVIRONMENT == 'production' else os.environ.get('DEV_USERS_DB_PASSWORD'),
+        'HOST': os.environ.get('AIVEN_HOST', 'DEV_USERS_DB_HOST') if ENVIRONMENT == 'production' else os.environ.get('DEV_USERS_DB_HOST'),
+        'PORT': os.environ.get('AIVEN_PORT', 'DEV_USERS_DB_PORT') if ENVIRONMENT == 'production' else os.environ.get('DEV_USERS_DB_PORT') ,
     },
 }
 

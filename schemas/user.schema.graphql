@@ -161,6 +161,19 @@ type User{
   isVerified: Boolean
 }
 
+"Create a NutraNova superuser"
+input CreateSuperUserInput{
+  email: String
+  username: String
+  password: String
+}
+
+"Login a NutraNova superuser"
+input LoginSuperUserInput{
+  username: String
+  password: String
+}
+
 "After first OIDC authentication, user should be on-boarded to create their complete profile. This is the input data required of them."
 input OnboardUserInput{
   gender: GENDER_CHOICES!
@@ -203,11 +216,20 @@ input UpdateUsername{
   username: String!
 }
 
+"After a super user has been created, this will be the response"
+type SuperUserRegistrationResponse{
+  email: String
+  username: String
+  is_superuser: Boolean
+}
 
-"After a user (un)follows another user, a message response is given"
-type UserFollowingResponse{
+type SuperUserLoginResponse{
+  superuser: SuperUserRegistrationResponse
+  jwt: String
   message: String
 }
+
+
 
 "After user data is updated a new jwt is given in order for the user to interact properly with other microservices"
 type UpdateUserResponse{
@@ -245,6 +267,12 @@ type Query{
 
 "The mutation resolvers"
 type Mutation{
+  "create superuser"
+  createSuperUser(input: CreateSuperUserInput): SuperUserRegistrationResponse
+
+  "authenticate superuser"
+  authenticateSuperUser(input: LoginSuperUserInput): SuperUserLoginResponse
+
   "setup profile after registration of current user"
   onboardUser(input: OnboardUserInput): UpdateUserResponse
   "update profile of current user"
@@ -254,7 +282,7 @@ type Mutation{
   "update username of current user"
   updateUsername(input: UpdateUsername): UpdateUserResponse
   "follow a user by their username"
-  followUser(username: String): UserFollowingResponse
+  followUser(username: String): String
   "unfollow a user by their username"
-  unFollowUser(username: String): UserFollowingResponse
+  unFollowUser(username: String): String
 }
