@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from utils.get_token_email import get_user_email
 from .models import UserFollowing
 from utils.rabbitmq.publishers.user_data_update import send_user_data_update
+from utils.custom_rabbitmq_message_id import custom_rabbitmq_message_id
 from utils.jwt_encode_decode import encode_access_token
 from utils.update_access_token import update_access_token
 from .views import oidc_get_or_create_user, create_superuser, authenticate_superuser
@@ -127,6 +128,7 @@ def resolve_update_profile(_, info, input:dict):
     # send message to RabbitMQ
     event_message = {
       # general data needed for all microservices
+      "message_id": custom_rabbitmq_message_id(),
       "type": rabbitmq_message_type, # adding 'type' key to the message fixes the issue a consumer throws when is consumes different messages to work with
       "username": user.username,
       "first_name": user.first_name,
@@ -182,6 +184,7 @@ def resolve_update_username(_, info, input:dict):
 
     # send message to RabbitMQ
     event_message = {
+      "message_id": custom_rabbitmq_message_id(),
       "type": rabbitmq_message_type,
       "old_username": old_username,
       "new_username": user.username, # updated username
