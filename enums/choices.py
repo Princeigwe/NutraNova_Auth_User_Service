@@ -1,6 +1,7 @@
 GENDER_CHOICES = [
     ("MALE", "male"),
-    ("FEMALE", "female")
+    ("FEMALE", "female"),
+    ("PREFER_NOT_TO_SAY", "prefer_not_to_say")
 ]
 
 ROLE_CHOICES = [
@@ -9,12 +10,16 @@ ROLE_CHOICES = [
 ]
 
 DIETARY_PREFERENCES_CHOICES = [
+  ("GENERAL", 'general'),
   ("VEGETARIAN", 'vegetarian'),
   ("VEGAN", "vegan"),
   ("PESCATARIAN", "pescatarian"),
   ("GLUTEN_FREE", "gluten free"),
   ("DAIRY_FREE", "dairy free"),
-  ("LOW_CARB", "low carb")
+  ("LOW_CARB", "low carb"),
+  ("PREBIOTIC", "prebiotic"),
+  ("PROBIOTIC", "probiotic"),
+  ("HYDRATING", "Hydrating")
 ]
 
 HEALTH_GOALS_CHOICES = [
@@ -24,7 +29,17 @@ HEALTH_GOALS_CHOICES = [
   ("LOW_CHOLESTEROL", "low cholesterol"),
   ("BETTER_SLEEP", "better sleep"),
   ("HEALTHY_AGING", "healthy aging"),
-  ("OVERALL_WELLNESS", "overall wellness")
+  ("OVERALL_WELLNESS", "overall wellness"),
+  ("ANTI_INFLAMMATORY", "anti-inflammatory"),
+  ("JOINT_HEALTH", "joint health"),
+  ("IMMUNE_SUPPORT", "immune support"),
+  ("GUT_HEALTH", "gut health"),
+  ("LOW_FAT", "low fat"),
+  ("WEIGHT_MAINTENANCE", "weight maintenance"),
+  ("CARDIOVASCULAR_HEALTH", "cardiovascular health"),
+  ("DIGESTIVE_HEALTH", "digestive health"),
+  ("BRAIN_HEALTH", "brain health"),
+  ("RECOVERY", "recovery")
 ]
 
 ALLERGEN_CHOICES = [
@@ -80,7 +95,8 @@ TASTE_PREFERENCES_CHOICES = [
   ("GARLICKY", "garlicky"),
   ("CITRUSY", "citrusy"),
   ("MILD", "mild"),
-  ("AROMATIC", "aromatic")
+  ("AROMATIC", "aromatic"),
+  ("CREAMY", "creamy")
 ]
 
 HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES = [

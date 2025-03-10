@@ -3,10 +3,36 @@ from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from utils.get_token_email import get_user_email
 from .models import UserFollowing
+from utils.rabbitmq.publishers.user_data_update import send_user_data_update
+from utils.custom_rabbitmq_message_id import custom_rabbitmq_message_id
+from utils.jwt_encode_decode import encode_access_token
+from utils.update_access_token import update_access_token
+from .views import oidc_get_or_create_user, create_superuser, authenticate_superuser
+import os
+from datetime import datetime
+
 
 User = get_user_model()
+rabbitmq_message_type = os.environ.get('CHEF_DATA_UPDATE_MESSAGE_TYPE')
 
 # commented out all database_sync_to_async decorator because I discovered Vercel does not support websocket connection for Daphne Channels
+
+
+#** this resolver function is meant for superuser registration,
+#** which will be more efficient in interacting with other microservices,
+#** rather than creating a superuser for each microservice
+def resolve_create_superuser(*_, input:dict):
+  email = input['email']
+  username = input['username']
+  password = input['password']
+  superuser = create_superuser(email=email, username=username, password=password)
+  return superuser
+
+def resolve_authenticate_superuser(*_, input:dict):
+  username = input['username']
+  password = input['password']
+  authenticated_superuser = authenticate_superuser(username=username, password=password)
+  return authenticated_superuser
 
 # @database_sync_to_async
 def resolve_onboard_user(_, info, input:dict):
@@ -27,8 +53,10 @@ def resolve_onboard_user(_, info, input:dict):
   try:
     user = User.objects.get(email=user_email)
     if user.is_on_boarded:
-      raise Exception( "User is already on-boarded. Update profile to make changes." )
-    user.age = input['age']
+      updated_access_token = update_access_token(user)
+      raise Exception( f"User is already on-boarded, update profile to make changes. New access token: {updated_access_token} " )
+    user.dob = input['dob']
+    user.telephone = input['telephone']
     user.gender = input['gender']
     user.role = input['role']
     user.dietary_preference = input['dietary_preference']
@@ -43,6 +71,11 @@ def resolve_onboard_user(_, info, input:dict):
       user.allergens = input['allergens']
     if 'medical_conditions' in input:
       user.medical_conditions = input['medical_conditions']
+
+    # if user is onboarding as a regular user, they cannot input specializations meant for health experts
+    if (input['role'] == 'USER') and ('specialization' in input):
+      raise Exception("Specialization of health experts cannot be used on individual user")
+
     if 'specialization' in input:
       user.specialization = input['specialization'] 
     if 'professional_statement' in input:
@@ -51,7 +84,13 @@ def resolve_onboard_user(_, info, input:dict):
       user.availability = input['availability']
     
     user.save()
-    return user
+    jwt = update_access_token(user)
+    # return user
+    return {
+      "user": user, 
+      "jwt": jwt
+    }
+
   except User.DoesNotExist:
     print('User does not exist')
     raise Exception('User does not exist')
@@ -69,21 +108,58 @@ def resolve_update_profile(_, info, input:dict):
     user = User.objects.get(email=user_email)
     if user.role == "USER" and ('specialization' in input):
       raise Exception("Invalid action: Cannot set specialization with USER role.")
+    
+    user.first_name             = input['first_name'] if 'first_name' in input else user.first_name
+    user.last_name              = input['last_name'] if 'last_name' in input else user.last_name
+    user.dob                    = input['dob'] if 'dob' in input else user.dob
+    user.telephone                    = input['telephone'] if 'telephone' in input else user.telephone
+    user.dietary_preference     = input['dietary_preference'] if 'dietary_preference' in input else user.dietary_preference
+    user.health_goal            = input['health_goal'] if 'health_goal' in input else user.health_goal
+    user.activity_level         = input['activity_level'] if 'activity_level' in input else user.activity_level
+    user.cuisines               = input['cuisines'] if 'cuisines' in input else user.cuisines
+    user.taste_preferences      = input['taste_preferences'] if 'taste_preferences' in input else user.taste_preferences
 
-    # The code block is iterating over the key-value pairs in the `input` dictionary. It checks if the
-    # value is not None and if the keys `'cuisines'` and `'taste_preferences'` are present in the
-    # `input` dictionary. If both conditions are true, it sets the attribute of the `user` object with
-    # the corresponding key to the value.
-    for key, value in input.items():
-      if value is not None:
-        if 'cuisines' in input :
-          if len(input['cuisines']) != 0:
-            if 'taste_preferences' in input:
-              if len(input['taste_preferences']) != 0:
-                setattr(user, key, value)
+    user.specialization         = input['specialization'] if 'specialization' in input else user.specialization
+    user.professional_statement = input['professional_statement'] if 'professional_statement' in input else user.professional_statement
+    user.availability           = input['availability'] if 'availability' in input else user.availability
     
     user.save()
-    return user
+    jwt = update_access_token(user)
+
+    # send message to RabbitMQ
+    event_message = {
+      # general data needed for all microservices
+      "message_id": custom_rabbitmq_message_id(),
+      "type": rabbitmq_message_type, # adding 'type' key to the message fixes the issue a consumer throws when is consumes different messages to work with
+      "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+      "username": user.username,
+      "first_name": user.first_name,
+      "last_name": user.last_name,
+
+      # specific data needed for the user foreign key in recipe model in Recipe microservice
+      # user_image is supposed is supposed to be among, but that is handled in the microservice REST API endpoint for uploading image
+      "vote_strength": user.vote_strength,
+      "is_verified": user.is_verified,
+
+      # specific data needed for the user preferences in Chef model in Recommendations microservice
+      "preferences": {
+        "dietary_preference": user.dietary_preference,
+        "health_goal":        user.health_goal,
+        "allergens":          user.allergens,
+        "activity_level":     user.activity_level,
+        "cuisines":           user.cuisines,
+        "medical_conditions": user.medical_conditions,
+        "taste_preferences":  user.taste_preferences
+      }
+    }
+
+    # publish updated user message to rabbitmq
+    send_user_data_update(event_message)
+
+    return {
+      "user": user, 
+      "jwt": jwt
+    }
   except User.DoesNotExist:
     print('User does not exist')
     raise Exception('User does not exist')
@@ -94,15 +170,40 @@ def resolve_update_username(_, info, input:dict):
   user_email = get_user_email(info)
 
   desired_username = input['username']
+  trimmed_desired_username = desired_username.strip()
+  if (" " in trimmed_desired_username) or ("@" in trimmed_desired_username):
+    raise Exception("Spaced characters and @ not allowed in username. Please try again.")
   results = User.objects.filter(username=input['username'])
   if len(results) != 0:
     raise Exception(f"{desired_username} is already taken")
   
   try:
     user = User.objects.get(email=user_email)
-    user.username = input['username']
+    old_username = user.username
+    # user.username = input['username']
+    user.username = trimmed_desired_username
     user.save()
-    return user
+
+    # send message to RabbitMQ
+    event_message = {
+      "message_id": custom_rabbitmq_message_id(),
+      "type": rabbitmq_message_type,
+      "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+      "old_username": old_username,
+      "new_username": user.username, # updated username
+    }
+
+    # publish updated user message to rabbitmq
+    send_user_data_update(event_message)
+
+    # create new access token for user of updated username 
+    # in order for the user to interact properly with their
+    # created recipes in the recipes service
+    jwt = update_access_token(user)
+    return {
+      "user": user, 
+      "jwt": jwt
+    }
   except User.DoesNotExist:
     raise Exception("User does not exist")
 
@@ -142,9 +243,7 @@ def resolve_follow_user(_, info, username):
   except UserFollowing.DoesNotExist:
     user_following = UserFollowing.objects.create(user_id=current_user, following_user_id=user_to_follow)
     user_following.save()
-    return {
-      "message": f"You are now following {user_to_follow.username}"
-    }
+    return  f"You are now following {user_to_follow.username}"
 
 
 def resolve_un_follow_user(_, info, username):
@@ -154,9 +253,7 @@ def resolve_un_follow_user(_, info, username):
     user_followed = User.objects.get(username=username)
     user_following = UserFollowing.objects.get(user_id=current_user, following_user_id=user_followed)
     user_following.delete()
-    return {
-      "message": f"You unfollowed {username}"
-    }
+    return f"You unfollowed {username}"
   except UserFollowing.DoesNotExist:
     return None
 

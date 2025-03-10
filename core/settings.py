@@ -22,14 +22,29 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
+
+ENVIRONMENT = os.environ.get("ENVIRONMENT", default="production" )
+
+if ENVIRONMENT == 'production':
+    SECURE_BROWSER_XSS_FILTER = True # protect against cross-site scripting attacks
+    X_FRAME_OPTIONS = 'DENY' # to protect against clickjacking attacks
+    SECURE_SSL_REDIRECT = True # make all non HTTPS traffic redirect  to HTTPS
+    SECURE_HSTS_SECONDS = 3600 # [HTTP Strict Transfer Security] the time in seconds the browser should remember that this application is only accessible using HTTPS
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True # to force every subdomain to be accessible over HTTPS only
+    SECURE_HSTS_PRELOAD =  True # to ensure https connection to website, before actually visiting the website
+    SECURE_CONTENT_TYPE_NOSNIFF = True # 
+    SESSION_COOKIE_SECURE = True # to use session cookie only over HTTPS
+    CSRF_COOKIE_SECURE = True # to secure csrf cookie in HTTPS connection
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') ## to prevent redirects
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get('DEBUG', default=0))
 
-ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1', 'localhost']
-ENVIRONMENT = os.environ.get('ENVIRONMENT')
+ALLOWED_HOSTS = ['nutranova-user.onrender.com', '127.0.0.1', 'localhost', 'users-service'] # users-service refers to the docker container in the compose file
+# ENVIRONMENT = os.environ.get('ENVIRONMENT')
 
 
 # Application definition
@@ -55,6 +70,8 @@ INSTALLED_APPS = [
     "cloudinary",
     "rest_framework",
     "corsheaders",
+    "drf_spectacular",
+    "drf_spectacular_sidecar",
 ]
 
 MIDDLEWARE = [
@@ -99,23 +116,13 @@ DATABASES = {
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
 
-    # connecting to remote cockroachDB database
-    # 'default': {
-    #     'ENGINE': 'django_cockroachdb',
-    #     'NAME': os.environ.get('COCKROACHDB_DATABASE_NAME'),
-    #     'USER': os.environ.get('COCKROACHDB_SQL_USER'),
-    #     'PASSWORD': os.environ.get('COCKROACHDB_SQL_PASSWORD'),
-    #     'HOST': os.environ.get('COCKROACHDB_HOST'),
-    #     'PORT': os.environ.get('COCKROACHDB_PORT'),
-    # },
-
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('AIVEN_DATABASE_NAME'),
-        'USER': os.environ.get('AIVEN_USER'),
-        'PASSWORD': os.environ.get('AIVEN_PASSWORD'),
-        'HOST': os.environ.get('AIVEN_HOST'),
-        'PORT': os.environ.get('AIVEN_PORT'),
+        'NAME': os.environ.get('AIVEN_DATABASE_NAME') if ENVIRONMENT == 'production' else os.environ.get('DEV_USERS_DB_NAME'),
+        'USER': os.environ.get('AIVEN_USER') if ENVIRONMENT == 'production' else os.environ.get('DEV_USERS_DB_USERNAME'),
+        'PASSWORD': os.environ.get('AIVEN_PASSWORD') if ENVIRONMENT == 'production' else os.environ.get('DEV_USERS_DB_PASSWORD'),
+        'HOST': os.environ.get('AIVEN_HOST', 'DEV_USERS_DB_HOST') if ENVIRONMENT == 'production' else os.environ.get('DEV_USERS_DB_HOST'),
+        'PORT': os.environ.get('AIVEN_PORT', 'DEV_USERS_DB_PORT') if ENVIRONMENT == 'production' else os.environ.get('DEV_USERS_DB_PORT') ,
     },
 }
 
@@ -174,6 +181,7 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser',
         'rest_framework.parsers.FileUploadParser',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 
@@ -185,3 +193,16 @@ CELERY_BROKER_URL = os.environ.get("REDIS_URL")
 # CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL")
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Profile-Photo-Upload Endpoint',
+    'DESCRIPTION': 'This is just a documentation on the endpoint for uploading user profile picture, as every other operation is done with GraphQL',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    
+    # OTHER SETTINGS
+
+    'SWAGGER_UI_DIST': 'SIDECAR',  # shorthand to use the sidecar instead
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR',
+}

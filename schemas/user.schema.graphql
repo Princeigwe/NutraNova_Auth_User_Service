@@ -2,6 +2,7 @@
 enum GENDER_CHOICES{
   MALE
   FEMALE
+  PREFER_NOT_TO_SAY
 }
 
 "User on-boarding as a regular user or as a dietitian(health practitioner)"
@@ -18,6 +19,10 @@ enum DIETARY_PREFERENCES_CHOICES{
   GLUTEN_FREE
   DAIRY_FREE
   LOW_CARB
+  GENERAL
+  PREBIOTIC
+  PROBIOTIC
+  HYDRATING
 }
 
 "Health goals for the user to pick from while on-boarding"
@@ -29,6 +34,16 @@ enum HEALTH_GOALS_CHOICES{
   BETTER_SLEEP
   HEALTHY_AGING
   OVERALL_WELLNESS
+  ANTI_INFLAMMATORY
+  JOINT_HEALTH
+  IMMUNE_SUPPORT
+  GUT_HEALTH
+  LOW_FAT
+  WEIGHT_MAINTENANCE
+  CARDIOVASCULAR_HEALTH
+  DIGESTIVE_HEALTH
+  BRAIN_HEALTH
+  RECOVERY
 }
 
 "User allergen choices while on-boarding"
@@ -66,6 +81,7 @@ enum CUISINES_CHOICES{
   AFRICAN
 }
 
+
 "Medical conditions for the user to pick from while on-boarding"
 enum MEDICAL_CONDITIONS_CHOICES{
   DIABETICS
@@ -90,6 +106,7 @@ enum TASTE_PREFERENCES_CHOICES{
   CITRUSY
   MILD
   AROMATIC
+  CREAMY
 }
 
 "Choices for a dietitian to pick from concerning their specialization"
@@ -125,51 +142,71 @@ type User{
   email: String
   username: String
   password: String
-  age: Int
+  dob: String
+  telephone: String
   gender: GENDER_CHOICES
   role: ROLE_CHOICES
   dietaryPreference: DIETARY_PREFERENCES_CHOICES
-  healthGoal: HEALTH_GOALS_CHOICES
+  healthGoal: [HEALTH_GOALS_CHOICES]
   allergens: [ALLERGEN_CHOICES]
   activityLevel: ACTIVITY_LEVELS
   cuisines: [CUISINES_CHOICES]
   medicalConditions: [MEDICAL_CONDITIONS_CHOICES]
   tastePreferences: [TASTE_PREFERENCES_CHOICES]
-  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  specialization: [HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES]
   professionalStatement: String
   availability: Boolean
   isOnBoarded: Boolean
+  voteStrength: Int
+  isVerified: Boolean
+}
+
+"Create a NutraNova superuser"
+input CreateSuperUserInput{
+  email: String
+  username: String
+  password: String
+}
+
+"Login a NutraNova superuser"
+input LoginSuperUserInput{
+  username: String
+  password: String
 }
 
 "After first OIDC authentication, user should be on-boarded to create their complete profile. This is the input data required of them."
 input OnboardUserInput{
-  age: Int!
   gender: GENDER_CHOICES!
+  dob: String!
+  telephone: String!
   role: ROLE_CHOICES!
   dietary_preference: DIETARY_PREFERENCES_CHOICES!
-  health_goal: HEALTH_GOALS_CHOICES!
+  health_goal: [HEALTH_GOALS_CHOICES!]!
   allergens: [ALLERGEN_CHOICES]
   activity_level: ACTIVITY_LEVELS!
   cuisines: [CUISINES_CHOICES!]!
   medical_conditions: [MEDICAL_CONDITIONS_CHOICES]
   taste_preferences: [TASTE_PREFERENCES_CHOICES!]!
-  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  specialization: [HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES]
   professional_statement: String
   availability: Boolean
 }
 
 "The input data responsible for updating the profile of the current user"
 input UpdateProfileInput{
-  age: Int
+  first_name: String
+  last_name: String
   gender: GENDER_CHOICES
+  dob: String
+  telephone: String
   dietary_preference: DIETARY_PREFERENCES_CHOICES
-  health_goal: HEALTH_GOALS_CHOICES
+  health_goal: [HEALTH_GOALS_CHOICES]
   allergens: [ALLERGEN_CHOICES]
   activity_level: ACTIVITY_LEVELS
   cuisines: [CUISINES_CHOICES]
   medical_conditions: [MEDICAL_CONDITIONS_CHOICES]
   taste_preferences: [TASTE_PREFERENCES_CHOICES]
-  specialization: HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES
+  specialization: [HEALTH_PRACTITIONER_SPECIALIZATION_CHOICES]
   professional_statement: String
   availability: Boolean
 }
@@ -179,10 +216,25 @@ input UpdateUsername{
   username: String!
 }
 
+"After a super user has been created, this will be the response"
+type SuperUserRegistrationResponse{
+  email: String
+  username: String
+  is_superuser: Boolean
+}
 
-"After a user (un)follows another user, a message response is given"
-type UserFollowingResponse{
+type SuperUserLoginResponse{
+  superuser: SuperUserRegistrationResponse
+  jwt: String
   message: String
+}
+
+
+
+"After user data is updated a new jwt is given in order for the user to interact properly with other microservices"
+type UpdateUserResponse{
+  user: User
+  jwt: String
 }
 
 "Schema to view user followers and following"
@@ -199,19 +251,38 @@ type FollowerFollowing{
 
 "The query resolvers"
 type Query{
+  "get a user's profile by their username"
   getUser(username: String!): User
+  "get the profile of the current logged in user"
   getMyProfile: User
+  "get the followers of the current logged in user"
   myFollowers: FollowerFollowing
+  "get the list of users that the current user is following"
   myFollowing: FollowerFollowing
+  "get the followers of a user by their username"
   userFollowers(username: String!): FollowerFollowing
+  "get the list of users that the current user us following by email"
   userFollowing(username: String!): FollowerFollowing
 }
 
 "The mutation resolvers"
 type Mutation{
-  onboardUser(input: OnboardUserInput): User
-  updateProfile(input: UpdateProfileInput): User
-  updateUsername(input: UpdateUsername): User
-  followUser(username: String): UserFollowingResponse
-  unFollowUser(username: String): UserFollowingResponse
+  "create superuser"
+  createSuperUser(input: CreateSuperUserInput): SuperUserRegistrationResponse
+
+  "authenticate superuser"
+  authenticateSuperUser(input: LoginSuperUserInput): SuperUserLoginResponse
+
+  "setup profile after registration of current user"
+  onboardUser(input: OnboardUserInput): UpdateUserResponse
+  "update profile of current user"
+
+  # updateProfile(input: UpdateProfileInput): User
+  updateProfile(input: UpdateProfileInput): UpdateUserResponse
+  "update username of current user"
+  updateUsername(input: UpdateUsername): UpdateUserResponse
+  "follow a user by their username"
+  followUser(username: String): String
+  "unfollow a user by their username"
+  unFollowUser(username: String): String
 }

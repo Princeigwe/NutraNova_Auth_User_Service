@@ -10,8 +10,8 @@ jobs:
   install-python-dependencies-and-test-application:
     executor: python/default
     environment:
-      VERCEL_ORG_ID: $VERCEL_ORG_ID
-      VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
+      # VERCEL_ORG_ID: $VERCEL_ORG_ID
+      # VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
       APOLLO_KEY: $APOLLO_KEY
     steps:
       - checkout
@@ -24,34 +24,45 @@ jobs:
           command: |
             python3 -m pytest -vv
   
-  deploy-with-vercel-cli:
-    executor: node/default
+  build-and-deploy-docker-image:
+    docker:
+      - image: cimg/python:3.12.1
+        auth:
+          username: $DOCKER_USERNAME
+          password: $DOCKER_PASSWORD
     steps:
       - checkout
-      - run:
-          name: Install Vercel CLI
-          command: |
-            sudo npm install --global vercel
-      # - run:
-      #     name: Login
-      #     command: vercel login pf708495@gmail.com
-      - run:
-          name: Pull
-          command: vercel pull --environment=preview --token $VERCEL_ACCESS_TOKEN
-      # - run:
-      #     name: Link Project
-      #     command: vercel link --token $VERCEL_ACCESS_TOKEN
-      # - run:
-      #     name: Build
-      #     command: vercel build --token $VERCEL_ACCESS_TOKEN
-      # - run: 
-      #     name: Deploy
-      #     command: |
-      #       vercel deploy --prebuilt --token $VERCEL_ACCESS_TOKEN
-      - run: 
-          name: Deploy
-          command: |
-            vercel --token $VERCEL_ACCESS_TOKEN
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - when:
+          condition:
+            equal: [staging, << pipeline.git.branch >>]
+          steps:
+            - run:
+                name: Build Docker image
+                command: docker build -t $DOCKER_USERNAME/nutranova_user_service:latest .
+            - run:
+                name: Push image
+                command: |
+                  docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.io
+                  docker push $DOCKER_USERNAME/nutranova_user_service:latest
+  
+  # switching from vercel to render 
+  # deploy-with-vercel-cli:
+  #   executor: node/default
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Install Vercel CLI
+  #         command: |
+  #           sudo npm install --global vercel
+  #     - run:
+  #         name: Pull
+  #         command: vercel pull --environment=preview --token $VERCEL_ACCESS_TOKEN
+  #     - run: 
+  #         name: Deploy
+  #         command: |
+  #           vercel --token $VERCEL_ACCESS_TOKEN
   
 
   update-subgraph-schema:
@@ -63,6 +74,9 @@ jobs:
             curl -sSL https://rover.apollo.dev/nix/latest | sh
             echo 'export PATH=$HOME/.rover/bin:$PATH' >> $BASH_ENV  
       - checkout
+      - run:
+          name: Rover Auth
+          command: rover config whoami
       # - run:
       #     name: Connect CLI to GraphOS Studio
       #     command: rover config auth
@@ -75,26 +89,51 @@ jobs:
           steps:
             - run:
                 name: Create SuperGraph Variant(Create Once with Rover CLI)
-                command: rover subgraph publish nutranova-super-graph@staging -s ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutra-nova-auth-user-service-pf708495-gmailcom.vercel.app/graphql/ --log debug
-            - run:
-                name: Schema Check
-                command: rover graph check nutranova-super-graph@staging -s ./schemas/user.schema.graphql --log debug
+                # command: rover subgraph publish nutranova-super-graph@staging -s ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutranova-user.onrender.com/graphql/ --log debug
+                command: |
+                  rover subgraph publish NutraNova@staging -s ./schemas/user.schema.graphql --name nutranova-user --routing-url https://nutranova-user.onrender.com/graphql/ --log debug
+
+            # - run:
+            #     name: Schema Check
+            #     command: rover graph check nutranova-super-graph@staging -s ./schemas/user.schema.graphql --log debug
 
               
             - run:
                 name: Publish Schema
-                command: rover subgraph publish nutranova-super-graph@staging --schema ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutra-nova-auth-user-service-pf708495-gmailcom.vercel.app/graphql/ --log debug
+                # command: rover subgraph publish nutranova-super-graph@staging --schema ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutranova-user.onrender.com/graphql/ --log debug
+                command: rover subgraph publish NutraNova@staging --schema ./schemas/user.schema.graphql --name nutranova-user --routing-url https://nutranova-user.onrender.com/graphql/ --log debug
+
+
+      # deploying to production environment
+      - when:
+          condition:
+            equal: [ main, << pipeline.git.branch >> ]
+          steps:
+            - run:
+                name: Create SuperGraph Variant(Create Once with Rover CLI)
+                # command: rover subgraph publish nutranova-super-graph@prod -s ./schemas/user.schema.graphql --name nutra-nova-auth-user-service --routing-url https://nutranova-user.onrender.com/graphql/ --log debug
+                command: |
+                  rover subgraph publish NutraNova@prod -s ./schemas/user.schema.graphql --name nutranova-user --routing-url https://nutranova-user.onrender.com/graphql/ --log debug 
+            # - run:
+            #     name: Schema Check
+            #     command: rover graph check nutranova-super-graph@staging -s ./schemas/user.schema.graphql --log debug
+
+              
+            - run:
+                name: Publish Schema
+                command: rover subgraph publish NutraNova@prod --schema ./schemas/user.schema.graphql --name nutranova-user --routing-url https://nutranova-user.onrender.com/graphql/ --log debug
 
 
 workflows:
   build-and-deploy:
     jobs:
       - install-python-dependencies-and-test-application
-      - deploy-with-vercel-cli:
-          context: NutraNova
+      - build-and-deploy-docker-image:
+          context:
+            - DOCKER_AUTH
           requires:
             - install-python-dependencies-and-test-application
       - update-subgraph-schema:
           context: NutraNova
           requires:
-            - deploy-with-vercel-cli
+            - build-and-deploy-docker-image

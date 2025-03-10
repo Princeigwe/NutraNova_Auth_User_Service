@@ -1,0 +1,7 @@
+
+*.pyc
+.vercel
+media/
+build_files.sh
+vercel.json
+auth0-action-scripts/
