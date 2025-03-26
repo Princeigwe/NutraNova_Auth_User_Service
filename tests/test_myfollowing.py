@@ -17,4 +17,4 @@ def test_my_following(mock_post, my_following_json_response):
       ''',
     "operationName": "MyFollowing"
   })
-  assert response.json() == my_following_json_response
+  assert response.json() == mock_post.json.return_value

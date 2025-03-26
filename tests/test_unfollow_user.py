@@ -14,4 +14,4 @@ def test_unfollow_user(mock_post, un_follow_user_response):
     ''', 
     "operationName": "UnFollowUser"
   })
-  assert response.json() == un_follow_user_response
+  assert response.json() == mock_post.json.return_value

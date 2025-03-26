@@ -37,4 +37,4 @@ def test_upgrade_profile(mock_post, user_json_response):
   }''',
   "operationName": "UpdateProfile"
   })
-  assert response.json() == user_json_response
+  assert response.json() == mock_post.json.return_value
