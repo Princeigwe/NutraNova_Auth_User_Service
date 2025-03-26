@@ -13,4 +13,4 @@ def test_follow_user(mock_post, follow_user_response):
     ''', 
     "operationName": "FollowUser"
   })
-  assert response.json() == follow_user_response
+  assert response.json() == mock_post.json.return_value
